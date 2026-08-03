@@ -5,14 +5,15 @@ summary: A project that began with a simple request for a more joined-up way to 
 status: growing
 technologies:
   - Knowledge Graph
-  - Neo4j
-  - .NET
   - PostgreSQL
-  - Mobile
-startYear: 2022
+  - FastAPI
+  - Wikidata
+  - React Native
+startYear: 2025
 featured: true
 order: 2
 repositoryPrivate: true
+lastUpdated: '2026-07'
 ---
 
 ## The Question
@@ -61,48 +62,59 @@ underestimated how much of the work that sentence hides.
 
 ## The Approach
 
-I started by trying to model a single century in one region by hand. Not a system, just
-entities and relationships written down, to find out whether the model I had in my head
-survived contact with real historical detail.
-
-It did not, which was useful. Working through a small set of real events forced the
-questions I had been avoiding: what counts as an event as opposed to a period, whether a
-person and a role are the same thing, and what to do with a date that is a guess.
+I started by writing the whole system down before building any of it: a design document
+covering the data model, the ingestion pipeline and the applications, written to be handed
+to AI coding agents as much as to my future self. Four principles from that document did
+most of the steering, and all four survived contact with reality: time and location are
+first-class, provenance is mandatory, humans curate what machines suggest, and it is
+better to be coarse and correct than detailed and wrong.
 
 From there the work went in three passes:
 
-1. **Model the shape.** Entities for people, places, events, periods and sources, with
-   typed relationships between them and time attached to the relationship rather than only
-   to the entity.
-2. **Load real data.** Import enough material to break the model, then fix the model rather
-   than the data.
-3. **Make it explorable.** Build a mobile application on top, because the interaction I
-   wanted — follow a thread, then follow it sideways — is a good fit for a phone and a bad
-   fit for a page of search results.
+1. **Model the shape.** Entities, events and typed relationships in PostgreSQL, with a
+   Python API in front of them and a map-and-timeline view on top, so I could see the data
+   as soon as there was any.
+2. **Load real data.** First harvested articles, then full Wikidata dumps. The point was to
+   break the model early, then fix the model rather than the data. It broke within the
+   first week, which turned out to be the cheapest possible time.
+3. **Make it explorable.** A public web app for the map and timeline, an admin app for
+   curation, and a mobile application, because the interaction I wanted — follow a thread,
+   then follow it sideways — is a good fit for a phone and a bad fit for a page of search
+   results.
 
 ## Architecture
 
-The core is a temporal knowledge graph in Neo4j. Nodes represent people, places, events,
-periods and sources. Edges represent participation, causation, succession, location and
-attribution, and it is the edges that carry the time information, because the interesting
-question is usually when a relationship held rather than when a thing existed.
+The core is a temporal knowledge graph modelled inside PostgreSQL rather than in a
+dedicated graph database. Entities — people, places, events, polities, organisations,
+works, concepts, dynasties — are rows in one table; typed edges between them are rows in
+another, covering participation, location, causation, precedence, family relationships and
+positions held. On top of that sits a claims-and-evidence layer that records who asserts
+what.
 
-A .NET service sits in front of the graph and owns ingestion, entity resolution and the
-read API. PostgreSQL holds the things a graph is bad at: import batches, source metadata,
-provenance records and the flat lookups that back search. The mobile application talks only
-to the .NET API, never to the graph directly, so the traversal patterns stay something I can
-change.
+A Python service (FastAPI) owns ingestion, search and the curation API. Background workers
+mine full Wikidata dumps into the graph, Redis handles caching and job queues, and PostGIS
+and pgvector live in the same database for geospatial queries and semantic search. Three
+clients sit on top — the public map-and-timeline web app, an admin app for review queues
+and dump management, and the mobile application — and all of them talk only to the API,
+never to the database, so the query patterns stay something I can change.
 
 Three decisions did most of the work:
 
-1. **Time lives on relationships.** A person node does not carry a single date range. "Was
-   ruler of" carries the range, "was present at" carries the moment. This made overlap
-   queries natural and made a lot of my earlier modelling look naive.
-2. **Uncertainty is part of the model, not a caveat in the text.** Every temporal value has
-   a precision and a confidence alongside it, so "1066" and "some time in the eleventh
-   century" are different values rather than the same value with a footnote.
-3. **Every claim points at a source.** Facts are attached to the source that asserts them.
-   Two sources may assert contradictory things, and the graph stores both.
+1. **The graph lives inside PostgreSQL.** A graph database was the obvious choice and I
+   decided against it. One store means the graph, the geospatial data and the embeddings
+   sit side by side with one operational surface, one backup and ordinary SQL. The cost is
+   that traversals are joins and recursive queries rather than a purpose-built query
+   language, and I accepted that cost knowingly.
+2. **Time lives on events, and uncertainty is part of the model.** An event carries its
+   start and end together with a precision — a known day and "some time in the eleventh
+   century" are different values, not the same value with a footnote — and a confidence
+   level. Both are database types, not prose. People and places get their place in time
+   through their edges to events rather than carrying date ranges of their own.
+3. **Every claim points at its evidence.** Facts can be recorded as claims — proposed,
+   accepted or rejected — each pointing at the source that asserts it, down to the snippet
+   and its licence. Two sources may assert contradictory things and both claims are
+   retained; a human decides what gets promoted into the graph, and the audit trail keeps
+   the losing claim rather than deleting it.
 
 <Callout variant="note" title="Diagram not published yet">
   I have deliberately not included an architecture diagram here. The version I have describes an
@@ -112,83 +124,106 @@ Three decisions did most of the work:
 
 ## Trade-offs
 
-- **Graph versus relational.** A relational schema would have been faster to build and
-  easier to host. It would also have made every question I actually cared about a
-  multi-join exercise. I took the operational cost of a graph database to keep the
-  traversals cheap, and I still hold both stores, which is complexity I own.
-- **Modelling fidelity versus getting anything finished.** Every historical edge case
-  suggests another distinction worth making. I repeatedly had to decide that a distinction
-  was real, interesting, and out of scope.
-- **Generated narrative versus authored narrative.** Text assembled from the graph is
-  consistent and slightly lifeless. Authored text reads better and drifts out of sync with
-  the data. I have not resolved this; the current answer is that the graph is the source of
-  truth and prose is a view over it, which I am not fully happy with.
-- **Depth versus scope.** Modelling one region well and one century deeply produces
-  something demonstrably useful. Modelling everything shallowly produces something that
-  looks impressive and answers nothing. I chose depth, which means large parts of history
-  are simply absent.
+- **Graph database versus graph-in-Postgres.** A dedicated graph database would have made
+  the deep traversals more natural. It would also have been a second store to operate,
+  back up and keep consistent with the geospatial and vector data. I chose one database
+  and pay for it in joins. So far the trade has held; the day a query needs six hops it
+  may stop holding.
+- **Breadth versus curation.** I chose to ingest Wikidata at dump scale rather than
+  hand-curate a small region deeply. That bought coverage across the whole timeline and
+  cost me exactly what you would expect: duplicate entities, misclassified kinds and
+  shallow facts that need enrichment before they are worth showing. The curation tooling
+  exists because of this choice.
+- **Generated narrative versus authored narrative.** The system generates event overviews
+  and story beats with a language model and stores them beside the sourced data. This is
+  precisely the fluent-history the project was meant to be sceptical of, and I kept it
+  anyway, because a graph you cannot read is useful to nobody. The compromise I hold to is
+  that the graph is the source of truth and the generated prose is a view over it — but
+  the prose is not yet derived claim-by-claim from the graph, and I am not fully happy
+  with that.
+- **Focus versus following the users.** The mobile application was built for following
+  threads through history. It has since grown a museum companion: photograph an exhibit
+  plaque, identify what you are looking at, and connect it into the graph. That is scope
+  growth by any honest definition. I let it happen because it is the same question asked
+  in a building instead of a browser.
 
 ## What Went Wrong
 
-My first model treated dates as values. Every event had a start and an end, both timestamps,
-and I moved on to the interesting parts feeling quite pleased.
+My first schema stored who-was-involved as a JSON blob on each event, and stored facts as
+plain column values with nothing recording who asserted them. It looked fine, the API
+worked, and I moved on to the interesting parts feeling quite pleased.
 
-Historical dates are not timestamps. They are claims of varying precision, sometimes
-mutually exclusive, frequently expressed relative to something else, and occasionally
-recorded in a calendar that no longer applies. My schema could store "1066" perfectly and
-could not store "probably in the spring, according to one chronicle written a century later"
-at all. So I did what the schema encouraged: I picked whichever date looked most
-authoritative and discarded the rest.
+Real data disagreed within a week. A participant list buried in JSON cannot answer "who
+else was at this event?" without unpacking every row, and a fact stored as a single column
+value means two sources asserting different dates cannot both be stored — the schema
+forces you to pick one and silently discard the disagreement. Once you have thrown away
+the disagreement between sources, you cannot show a user that historians are unsure, and
+the confident single value makes the system look more reliable than it is, which is the
+failure mode I would least want in something about history.
 
-That quietly destroyed the thing the project existed for. Once you have thrown away the
-disagreement between sources, you cannot show a user that historians are unsure, and you
-cannot explain why two parts of the graph contradict each other. Worse, the confident single
-date makes the system look more reliable than it is, which is the failure mode I would least
-want in something about history.
+So one week after the first working API I wiped the core schemas and rebuilt them:
+participants became first-class edges in the graph, and the claims-and-evidence layer was
+added so that conflicting assertions are retained, attributed and reviewed rather than
+overwritten. The migration that did it still carries the comment "data reset is
+acceptable" — true only because the mistake was caught in week one. A month later it would
+have been a long, careful data migration instead of a reset.
 
-The fix meant reworking the temporal model into precision and confidence carried on the
-relationship, and reworking ingestion so that conflicting claims are both retained and
-attributed. It was the largest rewrite in the project and it came from a modelling decision
-I made in an afternoon without thinking hard enough.
+Entity resolution went wrong in a smaller, more embarrassing way. The article-harvesting
+pipeline creates person entities from text at the same time as the Wikidata miner imports
+the same people under their proper identifiers, so the graph ended up with duplicates —
+the same king twice under two different ids. The merge that cleaned it up matches by label
+alone, which is exactly the naive approach, and it runs as a previewed, human-triggered
+operation rather than automatically — partly by design and partly because label matching
+is not something I am prepared to let loose unsupervised. Entities it cannot match are
+flagged and wait for a human. Resolution remains semi-automatic and imperfect, and I treat
+its output as suggestions.
 
-Entity resolution went wrong in a smaller, more embarrassing way. Matching people across
-sources by name and approximate date collapses distinct people with common names into one
-node and splits one person recorded under variant spellings into several. I now treat
-resolution as a suggestion that needs review rather than something to run automatically.
+One small failure earned a permanent comment in the codebase: uploaded exhibit photographs
+were written into the API container's own filesystem, so every rebuild silently deleted
+them while the database rows survived, leaving broken links. The fix was a Docker volume
+and the lesson was cheap, but I documented it in the compose file itself so I stop
+rediscovering it.
 
 ## Lessons
 
 - The hard part of a knowledge graph is not the graph. It is deciding what the nodes are,
   and that decision is a domain question rather than a technical one.
+- A JSON blob is where relationships go to die. If a question will ever cross a
+  relationship, that relationship needs to be a row, not a value inside one.
 - Uncertainty has to be a type in the model. If you represent doubt as prose, the first
   query that touches the data will discard it.
 - Attaching claims to sources is not academic tidiness. It is what makes contradiction
   representable instead of a bug.
-- Building a small part of the domain properly taught me far more than planning the whole of
-  it. The hand-modelled century is still the best thing I did on this project.
+- When the model is wrong, rewrite it immediately. The schema reset cost a week-old
+  dataset and nothing else; every week of delay would have raised the price.
 - A system that presents a confident answer where the evidence is thin is not merely
   incomplete, it is misleading. That applies well beyond history.
 
 ## Current State
 
-Chronos is growing rather than finished. The graph model and the .NET service work,
-ingestion runs, and the mobile application supports the exploration pattern the project was
-built for. It is a personal prototype: I have not published it, I have not measured it
-against anyone else's needs beyond the original request, and the coverage of history in it
-is narrow by design.
+Chronos is growing rather than finished. The PostgreSQL graph is populated from full
+Wikidata dumps by a resumable ingestion pipeline, the API and curation tooling work, and
+there are three clients: the public map-and-timeline web app, the admin app, and the
+mobile application, which covers both the original follow-a-thread exploration and the
+museum companion. Generated overviews, story beats and a conversational interface exist on
+top of the graph.
 
-The repository is private, largely because source licensing and attribution for the imported
-material still needs a proper review before any of it goes public. I am happy to walk
-through the model, the API and the parts of the ingestion pipeline that are mine.
+It is a personal prototype: I have not published it, I have not measured it against anyone
+else's needs beyond the original request, and its coverage inherits both the strengths and
+the gaps of Wikidata. The repository is private, largely because source licensing and
+attribution for the imported material still needs a proper review before any of it goes
+public. I am happy to walk through the model, the API and the ingestion pipeline.
 
 ## Next Questions
 
 - What is the clearest single example of a connection an ordinary timeline hides? I still do
   not have the one demonstration that makes the whole idea obvious in ten seconds.
-- How should uncertainty be shown in the interface? The model represents it well and the
-  application still renders it as a caveat, which is the old mistake in a new place.
-- Where should the boundary sit between the authored graph and generated assistance? A
-  language model can produce fluent history, and fluent history is exactly what this project
-  was meant to be sceptical of.
-- Which parts of the mobile application are stable enough to show, and what would I need to
-  check about source licensing before showing them?
+- How should uncertainty be shown in the interface? The model represents precision and
+  confidence well; showing a reader that a date is a guess, without burying them in
+  caveats, is a design problem I have not solved.
+- How do I close the loop between the generated prose and the claims layer? Today the
+  overviews are generated beside the graph rather than derived from it, which means the
+  most readable part of the system is the least accountable part.
+- Positions and reigns currently keep their date ranges in a metadata field on the edge,
+  which is the JSON-blob mistake quietly trying to happen again. Do some relationships
+  need first-class time after all?

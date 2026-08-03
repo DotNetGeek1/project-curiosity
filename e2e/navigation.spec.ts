@@ -87,7 +87,7 @@ test.describe('experiment stories', () => {
 
     // The reader must meet the need before the technology that answers it.
     const body = await page.locator('article').innerText();
-    expect(body.indexOf('The Problem')).toBeLessThan(body.indexOf('Neo4j'));
+    expect(body.indexOf('The Problem')).toBeLessThan(body.indexOf('PostgreSQL'));
   });
 
   test('Morris separates what is built from what is hypothesis', async ({ page }) => {
