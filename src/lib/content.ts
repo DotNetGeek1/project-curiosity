@@ -4,11 +4,16 @@ export type { Experiment, Note };
 
 export type ExperimentStatus = Experiment['status'];
 
+/** Public labels for the canonical lifecycle states defined in CNT-001. */
 export const experimentStatusLabels: Record<ExperimentStatus, string> = {
-  active: 'Active Experiment',
-  experimental: 'Experimental',
+  exploring: 'Exploring',
+  prototype: 'Prototype',
+  growing: 'Growing',
   shipped: 'Shipped',
   paused: 'Paused',
+  dormant: 'Dormant',
+  abandoned: 'Abandoned',
+  'escaped-containment': 'Escaped containment',
 };
 
 const byOrder = (a: Experiment, b: Experiment): number => a.order - b.order;

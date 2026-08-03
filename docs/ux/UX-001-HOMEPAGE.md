@@ -1,11 +1,11 @@
 # UX-001: Homepage
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-001, PRD-001, UX-RULES, DESIGN-RULES, WRITING-RULES |
+| Field            | Value                                                   |
+| ---------------- | ------------------------------------------------------- |
+| **Status**       | Draft                                                   |
+| **Owner**        | Me                                                      |
+| **Last Updated** | 2026-08-03                                              |
+| **Depends On**   | ADR-001, PRD-001, UX-RULES, DESIGN-RULES, WRITING-RULES |
 
 ## Purpose
 

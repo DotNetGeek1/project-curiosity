@@ -1,9 +1,9 @@
 # TECH-001: Application Structure
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                     |
+| ---------- | ------------------------- |
+| Status     | Accepted                  |
+| Version    | 1.0                       |
 | Depends On | ADR-002, ADR-003, ADR-004 |
 
 ## Purpose

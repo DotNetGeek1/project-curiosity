@@ -1,12 +1,12 @@
 # IMP-003: Cursor and Agent Rules
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-003 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | All accepted foundations, product, UX, design and architecture documents |
+| Field            | Value                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| **Document ID**  | IMP-003                                                                  |
+| **Status**       | Draft                                                                    |
+| **Owner**        | I own this document                                                      |
+| **Last Updated** | 2026-08-03                                                               |
+| **Depends On**   | All accepted foundations, product, UX, design and architecture documents |
 
 ## Purpose
 

@@ -1,11 +1,11 @@
 # CNT-003: Shared Metadata
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | CNT-001, CNT-002, TECHNICAL-RULES |
+| Field            | Value                             |
+| ---------------- | --------------------------------- |
+| **Status**       | Draft                             |
+| **Owner**        | Me                                |
+| **Last Updated** | 2026-08-03                        |
+| **Depends On**   | CNT-001, CNT-002, TECHNICAL-RULES |
 
 ## Purpose
 

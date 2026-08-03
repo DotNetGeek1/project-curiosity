@@ -1,11 +1,11 @@
 # UX-004: About Page
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | PRODUCT-VISION, TARGET-AUDIENCE, WRITING-RULES, UX-RULES |
+| Field            | Value                                                    |
+| ---------------- | -------------------------------------------------------- |
+| **Status**       | Draft                                                    |
+| **Owner**        | Me                                                       |
+| **Last Updated** | 2026-08-03                                               |
+| **Depends On**   | PRODUCT-VISION, TARGET-AUDIENCE, WRITING-RULES, UX-RULES |
 
 ## Purpose
 

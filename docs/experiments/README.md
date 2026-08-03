@@ -1,11 +1,11 @@
 # Experiment Briefs
 
-| Field | Value |
-|---|---|
-| **Document ID** | EXP-000 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
+| Field            | Value               |
+| ---------------- | ------------------- |
+| **Document ID**  | EXP-000             |
+| **Status**       | Draft               |
+| **Owner**        | I own this document |
+| **Last Updated** | 2026-08-03          |
 
 These briefs are controlled starting points for authoring the first public experiment stories. They are not finished public copy and must not be treated as evidence by themselves.
 

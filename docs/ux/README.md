@@ -1,10 +1,10 @@
 # UX Specifications
 
-| Field | Value |
-|---|---|
-| **Document ID** | UX-000 |
-| **Status** | Active |
-| **Owner** | Me |
+| Field            | Value      |
+| ---------------- | ---------- |
+| **Document ID**  | UX-000     |
+| **Status**       | Active     |
+| **Owner**        | Me         |
 | **Last Updated** | 2026-08-03 |
 
 ## Purpose

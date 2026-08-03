@@ -1,11 +1,11 @@
 # CNT-004: Evidence and Repository Visibility
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-001, CONTENT-STRATEGY, TECHNICAL-RULES |
+| Field            | Value                                      |
+| ---------------- | ------------------------------------------ |
+| **Status**       | Draft                                      |
+| **Owner**        | Me                                         |
+| **Last Updated** | 2026-08-03                                 |
+| **Depends On**   | ADR-001, CONTENT-STRATEGY, TECHNICAL-RULES |
 
 ## Purpose
 

@@ -1,11 +1,11 @@
 # UX-006: Research Notes
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | CONTENT-STRATEGY, WRITING-RULES, SITE-MAP |
+| Field            | Value                                     |
+| ---------------- | ----------------------------------------- |
+| **Status**       | Draft                                     |
+| **Owner**        | Me                                        |
+| **Last Updated** | 2026-08-03                                |
+| **Depends On**   | CONTENT-STRATEGY, WRITING-RULES, SITE-MAP |
 
 ## Purpose
 

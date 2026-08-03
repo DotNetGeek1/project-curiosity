@@ -1,12 +1,12 @@
 # Feature Roadmap
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-009 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Related documents** | PRD-006, STD-002 |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-009                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
+| **Related documents** | PRD-006, STD-002          |
 
 ## Purpose
 

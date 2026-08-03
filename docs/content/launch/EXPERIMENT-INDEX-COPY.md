@@ -1,12 +1,12 @@
 # Experiment Index Launch Copy
 
-| Field | Value |
-|---|---|
-| **Document ID** | CNT-LAUNCH-003 |
-| **Status** | Draft |
-| **Version** | 1.0 |
-| **Last Updated** | 2026-08-03 |
-| **Owner** | Me |
+| Field            | Value          |
+| ---------------- | -------------- |
+| **Document ID**  | CNT-LAUNCH-003 |
+| **Status**       | Draft          |
+| **Version**      | 1.0            |
+| **Last Updated** | 2026-08-03     |
+| **Owner**        | Me             |
 
 ## Metadata
 

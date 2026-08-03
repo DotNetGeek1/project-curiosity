@@ -1,11 +1,11 @@
 # Site Map
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-008 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                      |
+| --------------------- | -------------------------- |
+| **Document ID**       | PRD-008                    |
+| **Status**            | Accepted                   |
+| **Version**           | 1.0                        |
+| **Owner**             | I / repository maintainer  |
 | **Related documents** | PRD-004, PRD-006, UX Rules |
 
 ## Primary navigation

@@ -1,9 +1,9 @@
 # DSN-002: Design Tokens
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                 |
+| ---------- | --------------------- |
+| Status     | Accepted              |
+| Version    | 1.0                   |
 | Depends On | DSN-001, DESIGN-RULES |
 
 ## Purpose

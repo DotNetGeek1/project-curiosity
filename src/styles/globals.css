@@ -2,7 +2,7 @@
 @plugin '@tailwindcss/typography';
 
 /*
- * Design tokens follow docs/02-project--spec/02_DESIGN_LANGUAGE.md:
+ * Design tokens follow docs/design/DSN-002-DESIGN-TOKENS.md:
  * warm paper, charcoal, muted earthy accents. No neon, no gradients.
  */
 @theme {

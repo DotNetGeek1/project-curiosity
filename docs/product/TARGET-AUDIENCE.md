@@ -1,12 +1,12 @@
 # Target Audience
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-002 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Related documents** | PRD-001, PRD-003 |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-002                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
+| **Related documents** | PRD-001, PRD-003          |
 
 ## Primary audience
 

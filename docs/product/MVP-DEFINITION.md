@@ -1,11 +1,11 @@
 # MVP Definition
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-006 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-006                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
 | **Related documents** | PRD-001, PRD-005, PRD-009 |
 
 ## Purpose

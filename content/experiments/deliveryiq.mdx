@@ -1,8 +1,8 @@
 ---
 title: DeliveryIQ
-question: I wondered if AI could remove delivery friction instead of adding another layer of tooling.
-summary: Reinventing Jira and Azure DevOps with AI agents from the ground up, to remove friction, surface risks early and help teams deliver when velocity drops.
-status: active
+question: What would engineering delivery look like if AI was designed into the workflow from the beginning?
+summary: An attempt to rethink tools such as Jira and Azure DevOps around engineering flow, context and agent-assisted work rather than adding AI as a feature afterwards.
+status: exploring
 technologies:
   - .NET 8
   - Azure
@@ -25,34 +25,105 @@ a decision stays buried in comment threads.
 
 So I wondered: what if the tool did the admin, and the humans did the thinking?
 
-## Problem
+## The Problem
 
-_To be written._
+Delivery tools are very good at recording work and much less good at helping teams
+understand what needs attention. The board tells you what state everything is in; it does
+not tell you which of those states matter today. That judgement lives in a delivery lead's
+head, and keeping it current costs a standing meeting, a triage session and a lot of
+reading between the lines of comment threads.
 
-## Hypothesis
+The obvious fix — bolting a chatbot onto an existing tracker — did not convince me. A
+chatbot can answer questions about the data, but the data model itself was designed for
+record-keeping, not for reasoning. Asking better questions of the wrong model felt like
+polishing the problem.
 
-_To be written._
+## The Hypothesis
 
-## Approach
+My hypothesis was that agents plus structured delivery data could produce active guidance:
+surface blocked work, flag risk earlier and draft the coordination messages nobody enjoys
+writing. Not a dashboard that waits to be read, but a system that notices.
 
-_To be written._
+I want to be clear about the framing: this is still a hypothesis. I have not measured
+time saved or risk caught earlier, and I am deliberately not claiming either until I can
+support it with evidence.
+
+## The Approach
+
+I started narrow. The first prototype ingested backlog state, sprint activity and standup
+transcripts, normalised them into a structured store and produced a morning list of
+blocked work and follow-ups. No autonomy, no write access to anything — just a digest a
+delivery lead could skim and act on.
+
+From there I experimented with intervention points: where an agent's suggestion is
+genuinely useful, and where it is noise. Each agent got a single, narrow responsibility —
+summarise this sprint, check this backlog for stale dependencies — rather than a broad
+"assist with delivery" remit.
 
 ## Architecture
 
-_To be written._
+The prototype is a set of .NET 8 services on Azure. PostgreSQL is the system of record
+for the normalised delivery data; Redis handles caching and short-lived work queues.
+Semantic Kernel orchestrates the agents, with OpenAI models behind a routing layer so
+cheap models handle classification and summarisation and stronger models are reserved for
+the judgement calls.
 
-## Interesting Challenges
+Two decisions shaped everything else:
 
-_To be written._
+1. **Deterministic rules run first.** If a rule can detect the condition — a ticket
+   blocked for more than two days, a dependency with no owner — a rule detects it. The
+   model is only asked for judgement where rules run out.
+2. **Every suggestion is auditable.** Each agent output is logged with the context it was
+   given and the signals it used, so a human can always answer "why did it say that?"
+
+## Trade-offs
+
+- **Building from scratch versus integrating.** Rebuilding the delivery model gave me
+  freedom to design for reasoning, but it means the prototype cannot simply drop into a
+  team's existing Jira instance. I accepted that for an experiment; a product could not.
+- **Autonomy versus trust.** More agent autonomy makes better demos and worse tools. I
+  kept humans in control of anything that writes, which limits the "wow" but keeps the
+  output honest.
+- **Cost and latency versus quality.** Routing everything to the strongest model was
+  noticeably better and unaffordably slow for a background system. The routing layer is a
+  compromise I revisit constantly.
 
 ## What Went Wrong
 
-_To be written._
+The first agent design failed in an instructive way. I assumed that giving the model more
+context would produce better judgement, so early versions handed it everything: the full
+backlog, the sprint history, the transcripts. What came back was confident, fluent and
+unhelpful — advice that read well and told the team nothing they did not already know.
+
+Letting the model decide when to intervene made it worse. It intervened constantly.
+Within a week I was ignoring the output, which is the one failure mode a tool like this
+cannot survive.
+
+The fix inverted my assumption: small, curated context and rule-gated interventions beat
+a large context window and model-decided timing. I discovered that the hard part of an
+agent system is not the intelligence, it is the restraint.
 
 ## Lessons
 
-_To be written._
+- Agents need narrow responsibilities and explicit boundaries far more than they need
+  capability.
+- Deterministic rules are not the boring fallback; they are the credibility layer that
+  earns the model the right to be listened to.
+- Auditability is a feature, not overhead. The moment I could not explain a suggestion,
+  I stopped trusting all of them.
+- A system that is occasionally brilliant and frequently noisy is worse than one that is
+  reliably modest.
 
-## What's Next
+## Current State
 
-_To be written._
+DeliveryIQ is an active exploration, not a product. The prototype ingests delivery
+signals and produces daily summaries with rule-gated suggestions. The repository is
+private because it contains work I am not ready to publish, but I am happy to walk
+through the architecture and code.
+
+## Next Questions
+
+- Which intervention points earn their place, and which should be deleted?
+- What is the smallest evaluation harness that would let me test "did this catch a risk
+  earlier?" honestly?
+- What did I deliberately choose not to automate, and does that boundary still hold?

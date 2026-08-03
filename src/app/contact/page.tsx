@@ -15,11 +15,11 @@ export default function ContactPage() {
     <Container width="prose">
       <PageHeader
         eyebrow="Contact"
-        title="Get in touch"
-        description="Happy to talk about any of the experiments here, or to walk through the private repositories."
+        title="Want to talk about one of these experiments?"
+        description="I am happy to discuss the engineering, the decisions or the parts that did not make it into the public write-up."
       />
 
-      <div className="pb-20">
+      <div className="pb-12">
         <dl className="divide-y divide-rule border-y border-rule">
           <div className="flex items-baseline justify-between gap-6 py-4">
             <dt className="font-mono text-xs tracking-widest text-ink-faint uppercase">Email</dt>
@@ -46,6 +46,23 @@ export default function ContactPage() {
             </dd>
           </div>
         </dl>
+      </div>
+
+      <section aria-labelledby="roles-heading" className="pb-12">
+        <h2 id="roles-heading" className="font-serif text-2xl leading-tight">
+          Looking for an engineer who enjoys the unclear part?
+        </h2>
+        <p className="mt-4 text-ink-muted">
+          I am interested in hands-on product-engineering and technical-leadership roles where
+          difficult problems, good judgement and building useful software matter more than rigid
+          boundaries.
+        </p>
+      </section>
+
+      <div className="pb-20">
+        <Link href="/experiments" className="text-sm text-accent-rust underline underline-offset-4">
+          Back to experiments
+        </Link>
       </div>
     </Container>
   );

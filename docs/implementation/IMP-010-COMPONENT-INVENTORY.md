@@ -1,12 +1,12 @@
 # IMP-010: Component Inventory
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-010 |
-| **Status** | Active |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | DSN-005, TECH-001, IMP-007 |
+| Field            | Value                      |
+| ---------------- | -------------------------- |
+| **Document ID**  | IMP-010                    |
+| **Status**       | Active                     |
+| **Owner**        | Me                         |
+| **Last Updated** | 2026-08-03                 |
+| **Depends On**   | DSN-005, TECH-001, IMP-007 |
 
 ## Purpose
 
@@ -110,14 +110,14 @@ Keep one-off editorial compositions close to their page or MDX content.
 
 Populate this table during code review.
 
-| Component | Path | Category | Boundary | Contract | Status | Action |
-|---|---|---|---|---|---|---|
-| Site header | To inspect | Layout | To inspect | DSN-005 / UX-005 | Pending | Map implementation |
-| Footer | To inspect | Layout | Server preferred | DSN-005 / UX-005 | Pending | Map implementation |
-| Experiment card | To inspect | UI | Server preferred | DSN-005 / UX-002 | Pending | Map metadata and states |
-| Status badge | To inspect | UI | Server | CNT-001 / DSN-005 | Pending | Reconcile status vocabulary |
-| Figure | To inspect | MDX | Server preferred | DSN-007 | Pending | Check caption and alt handling |
-| Code block | To inspect | MDX | Server preferred | DSN-005 | Pending | Check overflow and labels |
+| Component       | Path       | Category | Boundary         | Contract          | Status  | Action                         |
+| --------------- | ---------- | -------- | ---------------- | ----------------- | ------- | ------------------------------ |
+| Site header     | To inspect | Layout   | To inspect       | DSN-005 / UX-005  | Pending | Map implementation             |
+| Footer          | To inspect | Layout   | Server preferred | DSN-005 / UX-005  | Pending | Map implementation             |
+| Experiment card | To inspect | UI       | Server preferred | DSN-005 / UX-002  | Pending | Map metadata and states        |
+| Status badge    | To inspect | UI       | Server           | CNT-001 / DSN-005 | Pending | Reconcile status vocabulary    |
+| Figure          | To inspect | MDX      | Server preferred | DSN-007           | Pending | Check caption and alt handling |
+| Code block      | To inspect | MDX      | Server preferred | DSN-005           | Pending | Check overflow and labels      |
 
 ## Completion Criteria
 

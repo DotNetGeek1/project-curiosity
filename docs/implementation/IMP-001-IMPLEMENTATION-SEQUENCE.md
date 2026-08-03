@@ -1,12 +1,12 @@
 # IMP-001: Implementation Sequence
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-001 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-002, ADR-003, TECH-001, UX-001 to UX-006 |
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| **Document ID**  | IMP-001                                      |
+| **Status**       | Draft                                        |
+| **Owner**        | I own this document                          |
+| **Last Updated** | 2026-08-03                                   |
+| **Depends On**   | ADR-002, ADR-003, TECH-001, UX-001 to UX-006 |
 
 ## Purpose
 

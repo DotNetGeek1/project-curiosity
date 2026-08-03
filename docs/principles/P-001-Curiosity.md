@@ -1,11 +1,11 @@
 # Curiosity
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRN-001 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field           | Value                     |
+| --------------- | ------------------------- |
+| **Document ID** | PRN-001                   |
+| **Status**      | Accepted                  |
+| **Version**     | 1.0                       |
+| **Owner**       | I / repository maintainer |
 
 > Every meaningful experiment starts with a question, not a technology.
 

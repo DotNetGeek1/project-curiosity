@@ -1,11 +1,11 @@
 # CNT-002: Research Note Schema
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | UX-006, CONTENT-STRATEGY, WRITING-RULES |
+| Field            | Value                                   |
+| ---------------- | --------------------------------------- |
+| **Status**       | Draft                                   |
+| **Owner**        | Me                                      |
+| **Last Updated** | 2026-08-03                              |
+| **Depends On**   | UX-006, CONTENT-STRATEGY, WRITING-RULES |
 
 ## Purpose
 

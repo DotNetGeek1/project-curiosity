@@ -1,13 +1,13 @@
 # Project Curiosity — UX Rules
 
-| Field | Value |
-|---|---|
-| **Document ID** | FOUNDATION-UX-001 |
-| **Status** | Proposed |
-| **Version** | 1.0 |
-| **Date** | 2026-08-03 |
-| **Owner** | Alex Griffiths |
-| **Extends** | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
+| Field           | Value                                             |
+| --------------- | ------------------------------------------------- |
+| **Document ID** | FOUNDATION-UX-001                                 |
+| **Status**      | Proposed                                          |
+| **Version**     | 1.0                                               |
+| **Date**        | 2026-08-03                                        |
+| **Owner**       | Me                                                |
+| **Extends**     | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
 
 ## 1. Purpose
 
@@ -17,16 +17,16 @@ The site is not a showcase interface that visitors must learn. It is a readable 
 
 The experience must help visitors answer:
 
-- Who is Alex?
-- What kinds of problems attract him?
-- How does he approach uncertainty?
-- What has he built?
-- What did he learn?
-- Where should I go next?
+- Who am I?
+- What kinds of problems attract me?
+- How do I approach uncertainty?
+- What have I built?
+- What did I learn?
+- Where should the visitor go next?
 
 ## 2. Primary Experience Goal
 
-> A visitor should understand Alex's engineering personality before they understand every project.
+> A visitor should understand my engineering personality before they understand every project.
 
 The first few minutes should establish curiosity, autonomy, technical range and practical judgement. Deeper project pages then provide evidence.
 
@@ -36,7 +36,7 @@ The site must support several audiences without becoming generic.
 
 ### 3.1 Engineering leader
 
-Needs to determine quickly whether Alex demonstrates senior judgement, ownership, communication and product thinking.
+Needs to determine quickly whether I demonstrate senior judgement, ownership, communication and product thinking.
 
 ### 3.2 Senior engineer
 
@@ -57,9 +57,9 @@ The experience should layer information rather than create separate sites for ea
 A successful journey should produce roughly these impressions:
 
 - **Within 30 seconds:** This is an experienced, hands-on engineer with a distinctive way of thinking.
-- **Within 3 minutes:** Alex notices problems, learns what is needed and builds experiments without waiting for permission.
+- **Within 3 minutes:** This engineer notices problems, learns what is needed and builds experiments without waiting for permission.
 - **Within 10 minutes:** The projects are technically credible and connected by a coherent curiosity-first approach.
-- **After a deeper read:** I understand enough of Alex's judgement to want a conversation or code walkthrough.
+- **After a deeper read:** I understand enough of this engineer's judgement to want a conversation or code walkthrough.
 
 The site must not depend on visitors reading in a fixed sequence.
 
@@ -115,13 +115,13 @@ The homepage is an orientation surface, not a complete biography.
 
 It should include:
 
-1. Alex's name and concise role identity;
+1. my name and concise role identity;
 2. the “Things I Wondered About” premise;
 3. a short explanation of curiosity-led engineering;
 4. featured experiment questions;
 5. a route to the full experiment index;
 6. current obsessions or active investigations;
-7. a short path into Alex's career story;
+7. a short path into my career story;
 8. contact or conversation entry points.
 
 ### 7.1 Hero rules
@@ -353,12 +353,12 @@ Before adding a page, control or interaction, ask:
 3. Does it strengthen the engineering-notebook model?
 4. Does it work with keyboard, touch and reduced motion?
 5. Does it preserve reading flow?
-6. Is it reliable enough to become evidence of Alex's judgement?
+6. Is it reliable enough to become evidence of my judgement?
 7. Would a simpler link or static diagram work better?
 
 ## 22. Acceptance Criteria
 
-- [ ] Visitors can identify Alex, the site's purpose and featured experiments within the first screen or immediate scroll.
+- [ ] Visitors can identify me, the site's purpose and featured experiments within the first screen or immediate scroll.
 - [ ] Primary navigation is conventional, accessible and predictable.
 - [ ] Experiments are discoverable through meaningful questions.
 - [ ] Every experiment page supports scan, read and investigate depths.

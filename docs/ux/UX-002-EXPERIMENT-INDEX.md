@@ -1,11 +1,11 @@
 # UX-002: Experiment Index
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-001, SITE-MAP, CONTENT-STRATEGY, UX-RULES |
+| Field            | Value                                         |
+| ---------------- | --------------------------------------------- |
+| **Status**       | Draft                                         |
+| **Owner**        | Me                                            |
+| **Last Updated** | 2026-08-03                                    |
+| **Depends On**   | ADR-001, SITE-MAP, CONTENT-STRATEGY, UX-RULES |
 
 ## Purpose
 

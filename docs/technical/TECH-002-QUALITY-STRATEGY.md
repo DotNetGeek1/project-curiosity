@@ -1,9 +1,9 @@
 # TECH-002: Quality Strategy
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                                               |
+| ---------- | --------------------------------------------------- |
+| Status     | Accepted                                            |
+| Version    | 1.0                                                 |
 | Depends On | TECHNICAL-RULES, UX specifications, content schemas |
 
 ## Purpose

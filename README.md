@@ -82,7 +82,7 @@ the build rather than rendering blank.
 title: Example
 question: I wondered if...
 summary: One or two sentences describing what this is.
-status: active # active | experimental | shipped | paused
+status: exploring # exploring | prototype | growing | shipped | paused | dormant | abandoned | escaped-containment
 technologies:
   - .NET 8
 startYear: 2025
@@ -91,8 +91,8 @@ order: 6
 ---
 ```
 
-Follow the section structure in `docs/02-project--spec/06_PROJECT_TEMPLATE.md` and the tone
-in `docs/02-project--spec/04_CONTENT_STYLE_GUIDE.md`. Every write-up needs a section on what
+Follow the section structure in `docs/content/CNT-001-EXPERIMENT-SCHEMA.md` and the tone
+in `docs/foundations/WRITING-RULES.md`. Every write-up needs a section on what
 went wrong.
 
 ## Conventions

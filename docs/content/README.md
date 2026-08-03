@@ -1,10 +1,10 @@
 # Content Model
 
-| Field | Value |
-|---|---|
-| **Document ID** | CNT-000 |
-| **Status** | Active |
-| **Owner** | Me |
+| Field            | Value      |
+| ---------------- | ---------- |
+| **Document ID**  | CNT-000    |
+| **Status**       | Active     |
+| **Owner**        | Me         |
 | **Last Updated** | 2026-08-03 |
 
 ## Purpose

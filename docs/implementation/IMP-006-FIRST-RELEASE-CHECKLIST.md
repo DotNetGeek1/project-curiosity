@@ -1,11 +1,11 @@
 # IMP-006: First Release Checklist
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-006 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
+| Field            | Value               |
+| ---------------- | ------------------- |
+| **Document ID**  | IMP-006             |
+| **Status**       | Draft               |
+| **Owner**        | I own this document |
+| **Last Updated** | 2026-08-03          |
 
 ## Purpose
 

@@ -1,10 +1,10 @@
 # ADR-005: Privacy-Respecting Analytics
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
-| Date | 2026-08-03 |
+| Field      | Value                            |
+| ---------- | -------------------------------- |
+| Status     | Accepted                         |
+| Version    | 1.0                              |
+| Date       | 2026-08-03                       |
 | Depends On | SUCCESS-METRICS, TECHNICAL-RULES |
 
 ## Decision

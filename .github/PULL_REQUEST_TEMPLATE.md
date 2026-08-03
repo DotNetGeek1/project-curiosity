@@ -13,6 +13,7 @@
 ## Checklist
 
 - [ ] `pnpm lint`, `pnpm typecheck` and `pnpm test` pass locally
-- [ ] Content changes follow `docs/02-project--spec/04_CONTENT_STYLE_GUIDE.md`
+- [ ] Content changes follow `docs/foundations/WRITING-RULES.md` and the contracts in `docs/content/`
+- [ ] Implementation changes meet `docs/implementation/IMP-004-DEFINITION-OF-DONE.md`
 - [ ] Visual changes checked at mobile and desktop widths
 - [ ] Keyboard navigation and focus states still work

@@ -1,10 +1,10 @@
 # ADR-002: Web Framework and Rendering Model
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
-| Date | 2026-08-03 |
+| Field      | Value                    |
+| ---------- | ------------------------ |
+| Status     | Accepted                 |
+| Version    | 1.0                      |
+| Date       | 2026-08-03               |
 | Depends On | ADR-001, TECHNICAL-RULES |
 
 ## Decision
