@@ -90,7 +90,7 @@ test.describe('experiment stories', () => {
     expect(body.indexOf('The Problem')).toBeLessThan(body.indexOf('PostgreSQL'));
   });
 
-  test('Morris separates what is built from what is hypothesis', async ({ page }) => {
+  test('Morris separates what was built from what was never built', async ({ page }) => {
     await page.goto('/experiments');
     await page.getByRole('link', { name: 'Morris' }).click();
 
@@ -98,19 +98,15 @@ test.describe('experiment stories', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Morris' })).toBeVisible();
     await expect(page.getByText('Escaped containment', { exact: true })).toBeVisible();
 
-    await expect(
-      page.getByRole('heading', { name: 'What Morris Cannot Do', exact: true })
-    ).toBeVisible();
-    await expect(page.getByText('Implemented and working')).toBeVisible();
-    await expect(page.getByText('Active hypotheses, not results')).toBeVisible();
-    await expect(page.getByText('Speculation, clearly labelled')).toBeVisible();
+    await expect(page.getByText('Built and running')).toBeVisible();
+    await expect(page.getByText('Never built')).toBeVisible();
   });
 
-  test('the reading guidance and diagram placeholders survive as asides', async ({ page }) => {
+  test('the reading guidance survives as an aside', async ({ page }) => {
     await page.goto('/experiments/morris');
 
     const asides = page.locator('article aside');
     await expect(asides.first()).toBeVisible();
-    await expect(page.getByText('Diagram not published yet').first()).toBeVisible();
+    await expect(page.getByText('How to read this page').first()).toBeVisible();
   });
 });
