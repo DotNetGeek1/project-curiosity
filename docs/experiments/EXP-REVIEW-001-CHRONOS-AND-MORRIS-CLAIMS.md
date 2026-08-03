@@ -146,12 +146,65 @@ several of these exclusions, so reintroducing them will fail the build.
 `../content/launch/EXPERIMENT-INDEX-COPY.md` places Morris third. Left unchanged because
 reordering affects the whole index, but it needs a decision.
 
+### Resolution — 2026-08-03
+
+The Morris page was rewritten from the RippleAI repository (formerly RippleNet) on the same
+day this verification ran. The rewrite was not a correction of details; the page described a
+different system from the one in the code. Every claim in "What Morris Cannot Do" was an
+intention rather than an enforced property, so the section was removed and replaced with an
+account of what the system can actually reach. The proposer-and-checker framing, the
+declarative facts-and-rules language and the 3D vision layer were removed because none of
+them exist. The physics simulation was promoted from origin story to the centre of the page,
+because in the code it is the substrate everything else runs on.
+
+`startYear` is corrected to 2025 and `lastUpdated` set to `2025-07`. The technologies list
+drops "3D Vision" and "Agents" for PyTorch, RippleLang and Local LLMs. Two diagrams were
+added under `public/images/experiments/morris/`. The unit tests in `src/lib/content.test.ts`
+and the Playwright test in `e2e/navigation.spec.ts` asserted the false safety claims, so both
+were updated; the unit test now asserts the _absence_ of absolute containment language.
+
+### Verification results — checked against the code, 2026-08-03
+
+Repository `RippleAI` (README branding RippleAI; `ripple_cpu.py` still says RippleNet).
+177 commits, first `da828e2` 2025-05-26 "inital commit, buggy but works", last work
+2025-07-18 on `origin/dvelopment`. Verdicts per row above:
+
+| Claim                                                                   | Verdict                        | Evidence in the code                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grew out of physics simulation work                                     | **Confirmed, and understated** | `ripple_physics_engine.py` is a PyTorch phase-field simulation and `ripple_orchestrator.py` steps it alongside everything else. It is not the origin, it is the live substrate. The second commit is "is now working with the right math".                                                  |
+| First version was a model proposing and a simulation checking           | Not supported                  | Nothing in the history shows a propose-and-check loop. The physics came first and the language model arrived last, wired only to translate natural language into macros.                                                                                                                    |
+| Small declarative language for facts, rules and goals                   | **False**                      | RippleLang is imperative: `macro`, `seed`, `wait`, `if_gt`, `jump`, `label`, `return`, `call`, `action`, `plugin` (`shared/ripplelang/parser/enhanced_parser.py`, sample `basic.rl`). No facts, no goals, no unification. The rule system lives in Python (`symbolic_ai/symbolic_kb.py`).   |
+| Command-line environment is what I actually use                         | Misleading                     | `shared/ripplelang/tools/repl.py` is a minimal read-parse-run loop. The real surfaces are ~17 FastAPI services under Docker, a React/Monaco IDE, a WebSocket gateway and a Windows voice client with a wake word.                                                                           |
+| Evaluator produces inspectable derivations                              | Overstated                     | `SymbolicKB.infer()` fires a rule when all antecedents are in the active set. The VM keeps an instruction trace. Neither is a derivation tree, and there is no proof object.                                                                                                                |
+| Model-assisted translation into the language                            | **Confirmed**                  | `macro-management-service/.../natural_language_to_ripplelang.py` and `shared/ripplelang/integration/llm_macro_proxy.py`. Provider is a locally hosted model by default; hosted providers are commented out.                                                                                 |
+| Narrow agents with a fixed, externally declared tool set                | **False**                      | There is one agent (`morris/`). `plugin_system.py` `_discover_plugins()` globs `plugins/*.py` and imports whatever is on disk at start-up, so the capability list is the directory contents.                                                                                                |
+| 3D vision feeding structured facts into the symbolic layer              | **False**                      | No vision code of any kind. No OpenCV, no torchvision, no depth or point-cloud handling. The perception that does exist is audio: speech synthesis and a wake word in the desktop client.                                                                                                   |
+| No mechanism to add tools or discover capability at runtime             | **False**                      | See plugin discovery above. Safety claim, and the most serious error on the page.                                                                                                                                                                                                           |
+| Self-modification removed, not restricted                               | Partly true, wrong subject     | Two real things: a `MODIFY` opcode in `ripple_cpu.py` writes a new instruction into instruction memory mid-run (`tests/test_cpu_self_modification.py`), and `symbolic_self_modification.py` pruned rules below a success cutoff. Neither patched source files. The rule pruner is orphaned. |
+| No general network access, no ambient credentials, no filesystem access | **False**                      | `plugins/system_control_plugin.py` launches applications including a shell via `subprocess.Popen(..., shell=True)`; `file_manager_plugin.py` reads and writes files; `github_plugin.py` and `weather_plugin.py` make outbound calls. `security.sandbox_mode` defaults to `False`.           |
+| No persistent memory or state across sessions                           | **False**                      | `morris/morris_memory.py` is a SQLite store of interactions, user preferences and learned patterns, loaded on start-up. `morris_selfopt.py` rewrites macros via the model and persists them. PostgreSQL and Redis throughout.                                                               |
+| Self-applied changes drifted until behaviour was unattributable         | Cannot verify from code        | Plausible given the rule pruner, but no trace of the episode. The verifiable analogue is that several integration points fall back to mock components on import failure and log only at debug level, so a run can silently not be running what you think.                                   |
+| Not evaluated against a simpler baseline                                | **Confirmed**                  | ~103 test files and `pytest-benchmark`, but no comparison against a plain rule engine or any external system. The central question is genuinely unanswered.                                                                                                                                 |
+| Repository private partly as a safety decision                          | Reason cannot be verified      | Private confirmed. The defensible reason found in the repo is different: its own README carries pattern counts, pass rates and latency figures that are not reproducible from the code.                                                                                                     |
+| `startYear: 2023`                                                       | **False**                      | First commit 2025-05-26. Ten weeks of work, ending 2025-07-18.                                                                                                                                                                                                                              |
+
+**Omissions the checklist did not anticipate:** the simulated CPU whose registers are regions
+of the phase field, which is the most original thing in the project and was absent from the
+page; the seeding path that writes symbolic conclusions back into the field as a phase shift;
+the ~17-service Docker composition with PostgreSQL, Redis and a message queue for a
+single-user research system; the React/Monaco RippleLang IDE; and the Windows voice client.
+
+**The finding that mattered most:** symbols are produced by hand-chosen thresholds on field
+statistics (`symbolic_kb.py`, `extract_symbols_from_simulation`). The vocabulary the symbolic
+layer reasons in was installed rather than discovered, which undercuts any claim about
+emergent structure. The rewritten page leads its failure section with this.
+
 ## Acceptance criteria
 
-- [ ] Every row above is confirmed, reworded or deleted.
-- [ ] No safety claim in the Morris page remains that is an intention rather than an enforced property.
-- [ ] No superlative or measurement survives that I cannot support.
-- [ ] `lastUpdated` is set on Chronos, or deliberately left unset.
+- [x] Every row above is confirmed, reworded or deleted.
+- [x] No safety claim in the Morris page remains that is an intention rather than an enforced property.
+- [x] No superlative or measurement survives that I cannot support.
+- [x] `lastUpdated` is set on Chronos, or deliberately left unset.
 - [ ] The Morris index order is decided against the approved launch copy.
 
 ## Related documents

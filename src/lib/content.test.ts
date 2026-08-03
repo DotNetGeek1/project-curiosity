@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  experimentStatusDescriptions,
   experimentStatusLabels,
+  formatExperimentMonth,
   formatExperimentPeriod,
   getExperimentBySlug,
+  getExperimentOutline,
   getExperiments,
   getNotes,
 } from '@/lib/content';
@@ -31,6 +34,96 @@ describe('formatExperimentPeriod', () => {
 
   it('renders a closed range', () => {
     expect(formatExperimentPeriod({ startYear: 2019, endYear: 2022 })).toBe('2019 – 2022');
+  });
+});
+
+describe('formatExperimentMonth', () => {
+  it('expands a front-matter month into a readable date', () => {
+    expect(formatExperimentMonth('2026-07')).toBe('July 2026');
+    expect(formatExperimentMonth('2025-01')).toBe('January 2025');
+    expect(formatExperimentMonth('2025-12')).toBe('December 2025');
+  });
+
+  it('leaves anything that is not a plain month exactly as written', () => {
+    expect(formatExperimentMonth('2026-07-14')).toBe('2026-07-14');
+    expect(formatExperimentMonth('Spring 2026')).toBe('Spring 2026');
+    expect(formatExperimentMonth('2026-13')).toBe('2026-13');
+  });
+});
+
+/**
+ * The outline drives the in-page navigation, so a section whose id does not match
+ * the heading rehype-slug generated would render a link to nowhere.
+ */
+describe('experiment section outlines', () => {
+  it('anchors every section at a heading id that exists in the compiled output', () => {
+    for (const experiment of getExperiments()) {
+      expect(experiment.sections.length, `${experiment.slug} has no sections`).toBeGreaterThan(0);
+
+      for (const section of experiment.sections) {
+        expect(
+          experiment.mdx,
+          `${experiment.slug} has no heading with id "${section.id}"`
+        ).toContain(`"${section.id}"`);
+      }
+    }
+  });
+
+  it('collects the top-level sections in the order they are written', () => {
+    for (const experiment of getExperiments()) {
+      const written = [...experiment.content.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+
+      expect(
+        experiment.sections.map((section) => section.title),
+        `${experiment.slug} outline drifted from its headings`
+      ).toEqual(written);
+    }
+  });
+
+  it('gives every section a unique id', () => {
+    for (const experiment of getExperiments()) {
+      const ids = experiment.sections.map((section) => section.id);
+      expect(new Set(ids).size, `${experiment.slug} has duplicate section ids`).toBe(ids.length);
+    }
+  });
+
+  it('opens the outline with the page header rather than the first body section', () => {
+    const chronos = getExperimentBySlug('chronos');
+    const outline = getExperimentOutline(chronos!);
+
+    expect(outline[0]).toEqual({ id: 'overview', title: 'Overview' });
+    expect(outline.slice(1)).toEqual(chronos!.sections);
+  });
+
+  it('yields the overview id to a body section that already claims it', () => {
+    const sections = [{ id: 'overview', title: 'Overview' }];
+
+    expect(getExperimentOutline({ sections })).toEqual(sections);
+  });
+});
+
+describe('experiment status vocabulary', () => {
+  it('explains every state rather than leaving it as a bare label', () => {
+    for (const status of canonicalStatuses) {
+      const description =
+        experimentStatusDescriptions[status as keyof typeof experimentStatusLabels];
+
+      expect(description, `${status} has no description`).toBeTruthy();
+      expect(description).toMatch(/\.$/);
+    }
+  });
+});
+
+describe('experiment themes', () => {
+  it('describes problem areas without repeating the technology list', () => {
+    for (const experiment of getExperiments()) {
+      expect(experiment.themes.length, `${experiment.slug} has no themes`).toBeGreaterThan(0);
+
+      const technologies = new Set(experiment.technologies);
+      const duplicated = experiment.themes.filter((theme) => technologies.has(theme));
+
+      expect(duplicated, `${experiment.slug} repeats technologies as themes`).toEqual([]);
+    }
   });
 });
 
@@ -117,19 +210,29 @@ describe('experiment narrative completeness', () => {
 });
 
 describe('Morris safety claims', () => {
-  it('states plainly what Morris cannot do', () => {
+  it('separates what was built from what was never built', () => {
     const body = bodyOf('morris');
 
-    expect(body).toMatch(/^## What Morris Cannot Do$/m);
-    expect(body).toMatch(/cannot modify its own source/);
+    expect(body).toMatch(/Built and running/);
+    expect(body).toMatch(/Never built/);
   });
 
-  it('separates implemented work from hypotheses and speculation', () => {
+  /**
+   * The 2026-08 review against the RippleAI repository found that the containment
+   * claims on this page were intentions rather than enforced properties. The page
+   * must not reacquire an absolute safety claim without the code to back it.
+   */
+  it('makes no absolute claim about what Morris cannot reach', () => {
     const body = bodyOf('morris');
 
-    expect(body).toMatch(/Implemented and working/);
-    expect(body).toMatch(/Active hypotheses, not results/);
-    expect(body).toMatch(/Speculation, clearly labelled/);
+    for (const forbidden of [
+      /\bcannot modify its own source\b/i,
+      /\bno general network access\b/i,
+      /\bno persistent memory\b/i,
+      /\bsandboxed\b/i,
+    ]) {
+      expect(body, `Morris must not claim ${forbidden.source}`).not.toMatch(forbidden);
+    }
   });
 
   it('avoids claiming general intelligence or autonomy', () => {

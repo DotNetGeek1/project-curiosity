@@ -2,11 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { ExperimentMeta } from '@/components/experiment/experiment-meta';
+import { RepositoryAccess } from '@/components/experiment/repository-access';
+import { SectionNav } from '@/components/experiment/section-nav';
 import { Container } from '@/components/layout/container';
 import { MdxRenderer } from '@/components/mdx/mdx-renderer';
 import { LabStatus } from '@/components/ui/lab-status';
-import { TechTags } from '@/components/ui/tech-tags';
-import { formatExperimentPeriod, getExperimentBySlug, getExperiments } from '@/lib/content';
+import {
+  formatExperimentPeriod,
+  getExperimentBySlug,
+  getExperimentOutline,
+  getExperiments,
+} from '@/lib/content';
 import { buildPageMetadata } from '@/lib/metadata';
 
 type ExperimentPageProps = {
@@ -41,89 +48,65 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
     notFound();
   }
 
+  const outline = getExperimentOutline(experiment);
+
   return (
     <Container>
-      <div className="py-12">
-        <Link
-          href="/experiments"
-          className="font-mono text-xs tracking-widest text-ink-faint uppercase transition-colors hover:text-accent-rust"
-        >
-          ← Back to experiments
-        </Link>
-      </div>
+      <div className="grid gap-12 py-10 lg:grid-cols-[12rem_minmax(0,1fr)_12rem] lg:gap-8 xl:grid-cols-[13rem_minmax(0,1fr)_14rem] xl:gap-12">
+        {/*
+         * The experiment header of UX-003 §1 — name, state, period, outline and
+         * repository visibility — set as a rail so the reading column can open on
+         * the question instead of on metadata. It scrolls internally rather than
+         * growing past the viewport, which DSN-004 requires of sticky elements.
+         */}
+        <div className="lg:sticky lg:top-8 lg:flex lg:max-h-[calc(100vh-4rem)] lg:flex-col lg:self-start">
+          <Link
+            href="/experiments"
+            className="font-mono text-xs tracking-widest text-ink-faint uppercase transition-colors hover:text-accent-rust"
+          >
+            ← Back to experiments
+          </Link>
 
-      <div className="grid gap-12 pb-20 lg:grid-cols-[1fr_16rem] lg:gap-16">
-        <article>
-          <p className="font-mono text-xs tracking-widest text-ink-faint uppercase">The question</p>
-          <h1 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">{experiment.title}</h1>
-          <p className="mt-5 max-w-prose text-xl leading-relaxed text-accent-rust">
-            {experiment.question}
-          </p>
-          <p className="mt-6 max-w-prose text-lg text-ink-muted">{experiment.summary}</p>
+          <div className="mt-6 border-t-2 border-accent-rust pt-4">
+            <h1 className="font-serif text-2xl leading-tight xl:text-3xl">{experiment.title}</h1>
+            <LabStatus
+              status={experiment.status}
+              className="mt-2 font-mono text-xs tracking-widest text-accent-rust uppercase"
+            />
+            <p className="mt-1 font-mono text-xs text-ink-faint">
+              {formatExperimentPeriod(experiment)}
+            </p>
+          </div>
 
-          <div className="prose mt-12 max-w-prose prose-neutral prose-headings:font-serif prose-headings:font-normal prose-a:text-accent-rust">
+          {/*
+           * Only the outline scrolls when the rail runs out of room, so the
+           * repository note below it cannot be clipped out of sight on a short
+           * viewport.
+           */}
+          <SectionNav sections={outline} className="mt-6 lg:min-h-0 lg:flex-1 lg:overflow-y-auto" />
+
+          <RepositoryAccess repository={experiment.repository} className="mt-6 lg:shrink-0" />
+        </div>
+
+        <article className="min-w-0">
+          <header id="overview" className="scroll-mt-24">
+            <p className="font-serif text-lg text-ink-faint italic">I wondered if...</p>
+            <p className="mt-3 font-serif text-3xl leading-snug text-ink sm:text-4xl">
+              {experiment.question}
+            </p>
+            <p className="mt-6 max-w-prose text-lg text-ink-muted">{experiment.summary}</p>
+          </header>
+
+          <div className="prose mt-12 max-w-prose prose-neutral prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-a:text-accent-rust">
             <MdxRenderer code={experiment.mdx} />
           </div>
         </article>
 
-        <aside className="lg:sticky lg:top-12 lg:self-start">
-          <dl className="space-y-8 text-sm">
-            <div>
-              <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                Technologies
-              </dt>
-              <dd>
-                <TechTags items={experiment.technologies} />
-              </dd>
-            </div>
-
-            <div>
-              <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                Current state
-              </dt>
-              <dd className="space-y-1">
-                <LabStatus status={experiment.status} />
-                <p className="font-mono text-xs text-ink-faint">
-                  {formatExperimentPeriod(experiment)}
-                </p>
-              </dd>
-            </div>
-
-            <div>
-              <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                Repository
-              </dt>
-              <dd className="text-ink-muted">
-                {experiment.repository ? (
-                  <Link
-                    href={experiment.repository}
-                    className="text-accent-rust underline underline-offset-4"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    View public repository
-                  </Link>
-                ) : (
-                  <>
-                    The repository is private. I can share selected code, architecture and a guided
-                    walkthrough where appropriate.{' '}
-                    <Link href="/contact" className="text-accent-rust underline underline-offset-4">
-                      Request a walkthrough
-                    </Link>
-                  </>
-                )}
-              </dd>
-            </div>
-
-            {experiment.lastUpdated ? (
-              <div>
-                <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                  Last investigated
-                </dt>
-                <dd className="text-ink-muted">{experiment.lastUpdated}</dd>
-              </div>
-            ) : null}
-          </dl>
+        <aside
+          aria-label="Experiment details"
+          className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto lg:pb-4"
+        >
+          <ExperimentMeta experiment={experiment} />
         </aside>
       </div>
     </Container>
