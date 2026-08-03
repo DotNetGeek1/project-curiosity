@@ -1,12 +1,12 @@
 # Decision Framework
 
-| Field | Value |
-|---|---|
-| **Document ID** | STD-002 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Related documents** | ADR-001, PHL-001 |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | STD-002                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
+| **Related documents** | ADR-001, PHL-001          |
 
 ## Purpose
 

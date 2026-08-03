@@ -1,13 +1,13 @@
 # RFC-NNN: Title
 
-| Field | Value |
-|---|---|
-| **Document ID** | RFC-NNN |
-| **Status** | Draft |
-| **Version** | 0.1 |
-| **Owner** | I / repository maintainer |
-| **Created** | YYYY-MM-DD |
-| **Related documents** | |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | RFC-NNN                   |
+| **Status**            | Draft                     |
+| **Version**           | 0.1                       |
+| **Owner**             | I / repository maintainer |
+| **Created**           | YYYY-MM-DD                |
+| **Related documents** |                           |
 
 ## Summary
 
@@ -19,11 +19,11 @@ Explain the problem, constraint or opportunity.
 
 ## Goals
 
-- 
+-
 
 ## Non-goals
 
-- 
+-
 
 ## Proposal
 
@@ -49,7 +49,7 @@ Link to research, prototypes, benchmarks or examples.
 
 ## Open questions
 
-- 
+-
 
 ## Decision
 

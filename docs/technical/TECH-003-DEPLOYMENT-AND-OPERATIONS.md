@@ -1,9 +1,9 @@
 # TECH-003: Deployment and Operations
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                      |
+| ---------- | -------------------------- |
+| Status     | Accepted                   |
+| Version    | 1.0                        |
 | Depends On | ADR-002, ADR-005, TECH-002 |
 
 ## Purpose

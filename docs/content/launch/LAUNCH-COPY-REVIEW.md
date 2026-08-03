@@ -1,12 +1,12 @@
 # Launch Copy Review Checklist
 
-| Field | Value |
-|---|---|
-| **Document ID** | CNT-LAUNCH-007 |
-| **Status** | Draft |
-| **Version** | 1.0 |
-| **Last Updated** | 2026-08-03 |
-| **Owner** | Me |
+| Field            | Value          |
+| ---------------- | -------------- |
+| **Document ID**  | CNT-LAUNCH-007 |
+| **Status**       | Draft          |
+| **Version**      | 1.0            |
+| **Last Updated** | 2026-08-03     |
+| **Owner**        | Me             |
 
 ## Purpose
 
@@ -73,12 +73,12 @@ Provide the final review gate for public launch copy before it is converted into
 
 Copy is ready to publish only when factual, confidentiality, product and voice review are complete.
 
-| Review | Name | Date | Result |
-|---|---|---|---|
-| Voice |  |  |  |
-| Factual |  |  |  |
-| Confidentiality |  |  |  |
-| Product |  |  |  |
+| Review          | Name | Date | Result |
+| --------------- | ---- | ---- | ------ |
+| Voice           |      |      |        |
+| Factual         |      |      |        |
+| Confidentiality |      |      |        |
+| Product         |      |      |        |
 
 ## Acceptance Criteria
 

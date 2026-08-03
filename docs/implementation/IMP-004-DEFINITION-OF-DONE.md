@@ -1,11 +1,11 @@
 # IMP-004: Definition of Done
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-004 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
+| Field            | Value               |
+| ---------------- | ------------------- |
+| **Document ID**  | IMP-004             |
+| **Status**       | Draft               |
+| **Owner**        | I own this document |
+| **Last Updated** | 2026-08-03          |
 
 ## Purpose
 

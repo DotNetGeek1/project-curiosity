@@ -1,11 +1,11 @@
 # Implementation Playbook
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-000 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
+| Field            | Value               |
+| ---------------- | ------------------- |
+| **Document ID**  | IMP-000             |
+| **Status**       | Draft               |
+| **Owner**        | I own this document |
+| **Last Updated** | 2026-08-03          |
 
 This folder translates the accepted product, UX, design and architecture documentation into an executable implementation sequence.
 

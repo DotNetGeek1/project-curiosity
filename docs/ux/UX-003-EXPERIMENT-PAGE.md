@@ -1,11 +1,11 @@
 # UX-003: Experiment Page
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-001, CONTENT-STRATEGY, WRITING-RULES, DESIGN-RULES, UX-RULES |
+| Field            | Value                                                            |
+| ---------------- | ---------------------------------------------------------------- |
+| **Status**       | Draft                                                            |
+| **Owner**        | Me                                                               |
+| **Last Updated** | 2026-08-03                                                       |
+| **Depends On**   | ADR-001, CONTENT-STRATEGY, WRITING-RULES, DESIGN-RULES, UX-RULES |
 
 ## Purpose
 

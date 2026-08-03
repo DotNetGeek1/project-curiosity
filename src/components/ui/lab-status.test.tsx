@@ -5,9 +5,9 @@ import { LabStatus } from '@/components/ui/lab-status';
 
 describe('LabStatus', () => {
   it('renders the human-readable label for a status', () => {
-    render(<LabStatus status="active" />);
+    render(<LabStatus status="exploring" />);
 
-    expect(screen.getByText('Active Experiment')).toBeInTheDocument();
+    expect(screen.getByText('Exploring')).toBeInTheDocument();
   });
 
   it('hides the status dot from assistive technology', () => {

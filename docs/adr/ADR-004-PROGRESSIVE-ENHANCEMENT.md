@@ -1,10 +1,10 @@
 # ADR-004: Progressive Enhancement
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
-| Date | 2026-08-03 |
+| Field      | Value                     |
+| ---------- | ------------------------- |
+| Status     | Accepted                  |
+| Version    | 1.0                       |
+| Date       | 2026-08-03                |
 | Depends On | ADR-001, ADR-002, DSN-006 |
 
 ## Decision

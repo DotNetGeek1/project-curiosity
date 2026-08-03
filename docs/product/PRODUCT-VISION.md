@@ -1,11 +1,11 @@
 # Product Vision
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-001 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                         |
+| --------------------- | ----------------------------- |
+| **Document ID**       | PRD-001                       |
+| **Status**            | Accepted                      |
+| **Version**           | 1.0                           |
+| **Owner**             | I / repository maintainer     |
 | **Related documents** | ADR-001, PHL-001, PRN-001–005 |
 
 ## Vision

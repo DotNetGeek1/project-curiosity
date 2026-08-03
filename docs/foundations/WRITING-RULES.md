@@ -1,19 +1,19 @@
 # Project Curiosity — Writing Rules
 
-| Field | Value |
-|---|---|
-| **Document ID** | FOUNDATION-WRITING-001 |
-| **Status** | Proposed |
-| **Version** | 1.0 |
-| **Date** | 2026-08-03 |
-| **Owner** | Alex Griffiths |
-| **Extends** | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
+| Field           | Value                                             |
+| --------------- | ------------------------------------------------- |
+| **Document ID** | FOUNDATION-WRITING-001                            |
+| **Status**      | Proposed                                          |
+| **Version**     | 1.0                                               |
+| **Date**        | 2026-08-03                                        |
+| **Owner**       | Me                                                |
+| **Extends**     | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
 
 ## 1. Purpose
 
 This document defines how Project Curiosity should sound.
 
-The site must read like Alex explaining an interesting problem to another intelligent person: direct, curious, technically precise, honest about uncertainty and occasionally amused by the consequences of his own experiments.
+The site must read like me explaining an interesting problem to another intelligent person: direct, curious, technically precise, honest about uncertainty and occasionally amused by the consequences of my own experiments.
 
 The writing should never sound like a marketing department, a generated case-study template or a person trying to imitate a research paper.
 
@@ -21,7 +21,7 @@ The writing should never sound like a marketing department, a generated case-stu
 
 > Explain the question, the reasoning and the learning before listing the technology.
 
-The writing exists to reveal engineering judgement. It should show what Alex noticed, why it mattered, what he believed, what he tried, what changed his mind and what emerged from the work.
+The writing exists to reveal engineering judgement. It should show what I noticed, why it mattered, what I believed, what I tried, what changed my mind and what emerged from the work.
 
 ## 3. Voice
 
@@ -46,11 +46,11 @@ The voice is not:
 - stuffed with buzzwords;
 - apologetic about ambition.
 
-## 4. The Alex Test
+## 4. The Voice Test
 
 Before publishing, ask:
 
-> Would Alex actually say this while explaining the project to another engineer?
+> Would I actually say this while explaining the project to another engineer?
 
 If the answer is no, rewrite it.
 
@@ -70,7 +70,7 @@ A substantial experiment should usually follow this shape:
 1. **I wondered if...** — the question.
 2. **What prompted it** — the observation, request or frustration.
 3. **Why it mattered** — the practical or intellectual value.
-4. **My first hypothesis** — what Alex initially thought might work.
+4. **My first hypothesis** — what I initially thought might work.
 5. **The first experiment** — how the idea was tested cheaply.
 6. **What emerged** — the system or prototype that developed.
 7. **The difficult bits** — constraints, trade-offs and technical challenges.
@@ -298,7 +298,7 @@ Technology tags should be limited to meaningful technologies, not every dependen
 
 It should not reproduce the CV line by line.
 
-Physics should be presented as an influence on how Alex thinks about systems, interaction, emergence and constraints—not as an unrelated hobby paragraph.
+Physics should be presented as an influence on how I think about systems, interaction, emergence and constraints—not as an unrelated hobby paragraph.
 
 ## 19. Calls to Action
 
@@ -330,9 +330,9 @@ AI may help structure, edit and clarify content, but it must not invent:
 - architecture decisions;
 - technical failures;
 - project maturity;
-- reasons Alex did not actually have.
+- reasons I did not actually have.
 
-Generated text must pass the Alex Test and be reviewed for inflated language.
+Generated text must pass the Voice Test and be reviewed for inflated language.
 
 When evidence is missing, use an explicit placeholder or ask for clarification. Do not fill the gap with plausible fiction.
 
@@ -348,7 +348,7 @@ Before publishing an experiment, confirm:
 - [ ] At least one meaningful trade-off is explained.
 - [ ] Failure or uncertainty is represented honestly where relevant.
 - [ ] Claims are supported by evidence.
-- [ ] The writing sounds like Alex.
+- [ ] The writing sounds like me.
 - [ ] Marketing clichés have been removed.
 - [ ] Confidential or employer-owned information is excluded.
 - [ ] The summary works for a non-specialist reader.

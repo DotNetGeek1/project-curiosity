@@ -1,12 +1,12 @@
 # User Personas
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-003 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Related documents** | PRD-002, PRD-004 |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-003                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
+| **Related documents** | PRD-002, PRD-004          |
 
 ## Persona 1: The technical founder or CTO
 

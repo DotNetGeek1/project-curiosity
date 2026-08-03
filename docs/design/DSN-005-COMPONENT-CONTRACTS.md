@@ -1,9 +1,9 @@
 # DSN-005: Component Contracts
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                                      |
+| ---------- | ------------------------------------------ |
+| Status     | Accepted                                   |
+| Version    | 1.0                                        |
 | Depends On | DSN-001 through DSN-004, UX specifications |
 
 ## Purpose

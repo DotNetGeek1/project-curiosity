@@ -1,12 +1,12 @@
 # IMP-005: Content Authoring Workflow
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-005 |
-| **Status** | Draft |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | CNT-001 to CNT-004, WRITING-RULES |
+| Field            | Value                             |
+| ---------------- | --------------------------------- |
+| **Document ID**  | IMP-005                           |
+| **Status**       | Draft                             |
+| **Owner**        | I own this document               |
+| **Last Updated** | 2026-08-03                        |
+| **Depends On**   | CNT-001 to CNT-004, WRITING-RULES |
 
 ## Purpose
 

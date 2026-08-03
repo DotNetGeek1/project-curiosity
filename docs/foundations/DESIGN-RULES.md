@@ -1,13 +1,13 @@
 # Project Curiosity — Design Rules
 
-| Field | Value |
-|---|---|
-| **Document ID** | FOUNDATION-DESIGN-001 |
-| **Status** | Proposed |
-| **Version** | 1.0 |
-| **Date** | 2026-08-03 |
-| **Owner** | Alex Griffiths |
-| **Extends** | [ADR-001: Project Curiosity Is an Engineering Notebook](../adr/ADR-001-Engineering-Notebook.md) |
+| Field           | Value                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| **Document ID** | FOUNDATION-DESIGN-001                                                                           |
+| **Status**      | Proposed                                                                                        |
+| **Version**     | 1.0                                                                                             |
+| **Date**        | 2026-08-03                                                                                      |
+| **Owner**       | Me                                                                                              |
+| **Extends**     | [ADR-001: Project Curiosity Is an Engineering Notebook](../adr/ADR-001-Engineering-Notebook.md) |
 
 ## 1. Purpose
 
@@ -196,7 +196,7 @@ A recommended sequence:
 2. featured questions;
 3. experiment index;
 4. current obsessions;
-5. short explanation of how Alex works;
+5. short explanation of how I work;
 6. invitation to explore or make contact.
 
 Do not begin with a skills matrix.
@@ -375,7 +375,7 @@ Do not introduce the following without an accepted ADR:
 
 Before adding a visual treatment, ask:
 
-1. Does it help explain the experiment or Alex's way of thinking?
+1. Does it help explain the experiment or my way of thinking?
 2. Does it improve orientation, hierarchy or comprehension?
 3. Is it still useful without animation?
 4. Does it remain credible to a senior engineer?

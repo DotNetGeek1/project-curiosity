@@ -1,11 +1,11 @@
 # Engineering Over Aesthetics
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRN-005 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field           | Value                     |
+| --------------- | ------------------------- |
+| **Document ID** | PRN-005                   |
+| **Status**      | Accepted                  |
+| **Version**     | 1.0                       |
+| **Owner**       | I / repository maintainer |
 
 > Good design should support understanding, not compete with it.
 

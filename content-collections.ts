@@ -5,7 +5,22 @@ import remarkGfm from 'remark-gfm';
 import readingTime from 'reading-time';
 import { z } from 'zod';
 
-const EXPERIMENT_STATUSES = ['active', 'experimental', 'shipped', 'paused'] as const;
+/**
+ * Canonical experiment lifecycle states from ADR-001 §7.2 and
+ * docs/content/CNT-001-EXPERIMENT-SCHEMA.md. The front-matter key is `status`;
+ * the values are the accepted `state` vocabulary. `escaped-containment` is
+ * deliberately exceptional and reserved for Morris.
+ */
+export const EXPERIMENT_STATUSES = [
+  'exploring',
+  'prototype',
+  'growing',
+  'shipped',
+  'paused',
+  'dormant',
+  'abandoned',
+  'escaped-containment',
+] as const;
 
 // rehype-slug gives every heading a stable id so sections stay deep-linkable
 // without wrapping headings in visible anchors.

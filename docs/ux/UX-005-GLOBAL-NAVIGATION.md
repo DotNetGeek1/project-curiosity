@@ -1,11 +1,11 @@
 # UX-005: Global Navigation and Footer
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | SITE-MAP, UX-RULES, DESIGN-RULES |
+| Field            | Value                            |
+| ---------------- | -------------------------------- |
+| **Status**       | Draft                            |
+| **Owner**        | Me                               |
+| **Last Updated** | 2026-08-03                       |
+| **Depends On**   | SITE-MAP, UX-RULES, DESIGN-RULES |
 
 ## Purpose
 

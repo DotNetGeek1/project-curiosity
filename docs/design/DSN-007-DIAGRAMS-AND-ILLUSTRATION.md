@@ -1,9 +1,9 @@
 # DSN-007: Diagrams and Illustration
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value                     |
+| ---------- | ------------------------- |
+| Status     | Accepted                  |
+| Version    | 1.0                       |
 | Depends On | DSN-001, DSN-002, DSN-005 |
 
 ## Purpose

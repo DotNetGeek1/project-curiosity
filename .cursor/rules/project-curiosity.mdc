@@ -5,7 +5,8 @@ alwaysApply: true
 
 # Project Curiosity
 
-This is an engineering notebook, not a portfolio. Every page answers "how does Alex think?"
+This is an engineering notebook, not a portfolio. Every page answers "how do I think
+through a problem?" — the site speaks in my first-person voice throughout.
 
 ## Never
 
@@ -36,7 +37,9 @@ This is an engineering notebook, not a portfolio. Every page answers "how does A
 
 ## Writing
 
-Follow `docs/02-project--spec/04_CONTENT_STYLE_GUIDE.md`: honest, curious, technical.
+Follow `docs/foundations/WRITING-RULES.md`: honest, curious, technical, first person.
 Use "I wondered if...", "I tried...", "This failed...", "I discovered...".
 Never use "revolutionary" or "groundbreaking". Every experiment write-up must include
-something that did not work.
+something that did not work. Experiment frontmatter follows the contract in
+`docs/content/CNT-001-EXPERIMENT-SCHEMA.md`; approved launch copy lives in
+`docs/content/launch/`. Page behaviour and layout follow `docs/ux/` and `docs/design/`.

@@ -1,11 +1,11 @@
 # Evidence Before Claims
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRN-003 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field           | Value                     |
+| --------------- | ------------------------- |
+| **Document ID** | PRN-003                   |
+| **Status**      | Accepted                  |
+| **Version**     | 1.0                       |
+| **Owner**       | I / repository maintainer |
 
 > If I claim I can do something, I should be able to show how I approached it.
 

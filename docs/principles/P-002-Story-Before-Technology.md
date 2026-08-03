@@ -1,11 +1,11 @@
 # Story Before Technology
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRN-002 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field           | Value                     |
+| --------------- | ------------------------- |
+| **Document ID** | PRN-002                   |
+| **Status**      | Accepted                  |
+| **Version**     | 1.0                       |
+| **Owner**       | I / repository maintainer |
 
 > People remember why something exists long after they have forgotten which framework I used.
 

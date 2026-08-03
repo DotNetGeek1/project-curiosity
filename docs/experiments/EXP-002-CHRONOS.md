@@ -1,11 +1,11 @@
 # EXP-002: Chronos
 
-| Field | Value |
-|---|---|
-| **Document ID** | EXP-002 |
-| **Status** | Draft brief |
-| **Owner** | I own this document |
-| **Last Updated** | 2026-08-03 |
+| Field            | Value               |
+| ---------------- | ------------------- |
+| **Document ID**  | EXP-002             |
+| **Status**       | Draft brief         |
+| **Owner**        | I own this document |
+| **Last Updated** | 2026-08-03          |
 
 ## Central question
 

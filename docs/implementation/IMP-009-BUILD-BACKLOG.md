@@ -1,12 +1,12 @@
 # IMP-009: Build Backlog
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-009 |
-| **Status** | Active |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Source** | Current scaffold, accepted documentation and first vertical slice |
+| Field            | Value                                                             |
+| ---------------- | ----------------------------------------------------------------- |
+| **Document ID**  | IMP-009                                                           |
+| **Status**       | Active                                                            |
+| **Owner**        | Me                                                                |
+| **Last Updated** | 2026-08-03                                                        |
+| **Source**       | Current scaffold, accepted documentation and first vertical slice |
 
 ## Purpose
 
@@ -23,43 +23,14 @@ Items should be removed when complete, split when they become too large, and cha
 - confirm pull-request preview teardown works;
 - document any required repository secrets without exposing values.
 
-### Reconcile current documentation paths
-
-The scaffold references older paths such as `docs/02-project--spec/...` in agent and PR guidance. Replace or map these references to the accepted documentation structure so contributors and agents are not sent to stale files.
-
-### Remove third-person identity from agent rules
-
-The current agent rules include wording such as "how does Alex think?". Replace this with first-person or product-centred language consistent with the accepted writing rules.
-
 ## Priority 1 — Complete the First Reader Journey
 
-### Wire approved launch copy
+### Complete DeliveryIQ evidence
 
-- homepage;
-- About page;
-- experiment index;
-- navigation and footer;
-- metadata and social descriptions.
+The narrative is written and the state metadata is honest. Remaining:
 
-### Complete DeliveryIQ content
-
-- gather verified facts;
-- write the full narrative;
-- add at least two evidence artefacts;
-- perform confidentiality review;
-- set honest state and visibility metadata.
-
-### Validate the experiment schema
-
-Compare implemented status values and frontmatter fields with the accepted content contracts. Decide whether to update the schema or documentation where terms differ.
-
-### Finish primary routes
-
-- homepage;
-- `/experiments`;
-- `/experiments/deliveryiq`;
-- `/about`;
-- research-note index or intentional placeholder.
+- add at least two verified evidence artefacts (architecture diagram, anonymised workflow example or safe code excerpt);
+- perform the factual and confidentiality review described in EXP-001.
 
 ## Priority 2 — Reconcile Design and Components
 

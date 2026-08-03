@@ -1,11 +1,11 @@
 # Clarity Before Cleverness
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRN-004 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field           | Value                     |
+| --------------- | ------------------------- |
+| **Document ID** | PRN-004                   |
+| **Status**      | Accepted                  |
+| **Version**     | 1.0                       |
+| **Owner**       | I / repository maintainer |
 
 > If a simpler explanation or implementation achieves the same outcome, prefer it.
 

@@ -1,11 +1,11 @@
 # Content Strategy
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-007 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                           |
+| --------------------- | ------------------------------- |
+| **Document ID**       | PRD-007                         |
+| **Status**            | Accepted                        |
+| **Version**           | 1.0                             |
+| **Owner**             | I / repository maintainer       |
 | **Related documents** | PRD-001, PRD-006, Writing Rules |
 
 ## Purpose

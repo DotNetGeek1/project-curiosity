@@ -1,9 +1,9 @@
 # DSN-003: Typography
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
+| Field      | Value            |
+| ---------- | ---------------- |
+| Status     | Accepted         |
+| Version    | 1.0              |
 | Depends On | DSN-001, DSN-002 |
 
 ## Purpose

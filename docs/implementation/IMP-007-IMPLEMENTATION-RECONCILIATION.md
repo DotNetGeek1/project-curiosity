@@ -1,12 +1,12 @@
 # IMP-007: Implementation Reconciliation
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-007 |
-| **Status** | Accepted |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-002, ADR-003, ADR-004, TECH-001, IMP-001 |
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| **Document ID**  | IMP-007                                      |
+| **Status**       | Accepted                                     |
+| **Owner**        | Me                                           |
+| **Last Updated** | 2026-08-03                                   |
+| **Depends On**   | ADR-002, ADR-003, ADR-004, TECH-001, IMP-001 |
 
 ## Purpose
 

@@ -1,10 +1,10 @@
 # DSN-001: Visual Language
 
-| Field | Value |
-|---|---|
-| Status | Accepted |
-| Version | 1.0 |
-| Owner | I/me |
+| Field      | Value                           |
+| ---------- | ------------------------------- |
+| Status     | Accepted                        |
+| Version    | 1.0                             |
+| Owner      | I/me                            |
 | Depends On | ADR-001, DESIGN-RULES, UX-RULES |
 
 ## Purpose

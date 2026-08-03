@@ -1,12 +1,12 @@
 # Documentation Standards
 
-| Field | Value |
-|---|---|
-| **Document ID** | STD-001 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Applies to** | All documents under `docs/` |
+| Field           | Value                       |
+| --------------- | --------------------------- |
+| **Document ID** | STD-001                     |
+| **Status**      | Accepted                    |
+| **Version**     | 1.0                         |
+| **Owner**       | I / repository maintainer   |
+| **Applies to**  | All documents under `docs/` |
 
 ## Purpose
 

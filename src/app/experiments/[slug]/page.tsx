@@ -45,15 +45,13 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
           href="/experiments"
           className="font-mono text-xs tracking-widest text-ink-faint uppercase transition-colors hover:text-accent-rust"
         >
-          ← All experiments
+          ← Back to experiments
         </Link>
       </div>
 
       <div className="grid gap-12 pb-20 lg:grid-cols-[1fr_16rem] lg:gap-16">
         <article>
-          <p className="font-mono text-xs tracking-widest text-ink-faint uppercase">
-            I wondered if…
-          </p>
+          <p className="font-mono text-xs tracking-widest text-ink-faint uppercase">The question</p>
           <h1 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">{experiment.title}</h1>
           <p className="mt-5 max-w-prose text-xl leading-relaxed text-accent-rust">
             {experiment.question}
@@ -78,7 +76,7 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
 
             <div>
               <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                Status
+                Current state
               </dt>
               <dd className="space-y-1">
                 <LabStatus status={experiment.status} />
@@ -100,10 +98,16 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    View on GitHub
+                    View public repository
                   </Link>
                 ) : (
-                  'Private repository. Available for review or guided walkthrough.'
+                  <>
+                    The repository is private. I can share selected code, architecture and a guided
+                    walkthrough where appropriate.{' '}
+                    <Link href="/contact" className="text-accent-rust underline underline-offset-4">
+                      Request a walkthrough
+                    </Link>
+                  </>
                 )}
               </dd>
             </div>
@@ -111,7 +115,7 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
             {experiment.lastUpdated ? (
               <div>
                 <dt className="mb-3 font-mono text-xs tracking-widest text-ink-faint uppercase">
-                  Last updated
+                  Last investigated
                 </dt>
                 <dd className="text-ink-muted">{experiment.lastUpdated}</dd>
               </div>

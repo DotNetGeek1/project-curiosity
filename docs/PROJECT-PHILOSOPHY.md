@@ -1,12 +1,12 @@
 # Project Philosophy
 
-| Field | Value |
-|---|---|
-| **Document ID** | PHL-001 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
-| **Related documents** | ADR-001, STD-001 |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PHL-001                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
+| **Related documents** | ADR-001, STD-001          |
 
 ## Why I am doing this properly
 

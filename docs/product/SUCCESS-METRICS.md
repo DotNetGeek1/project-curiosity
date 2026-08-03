@@ -1,11 +1,11 @@
 # Success Metrics
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-005 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-005                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
 | **Related documents** | PRD-001, PRD-004, PRD-006 |
 
 ## Purpose

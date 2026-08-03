@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.title,
-    template: `%s — ${siteConfig.name}`,
+    template: `%s — ${siteConfig.siteName}`,
   },
   description: siteConfig.description,
   openGraph: {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     url: siteConfig.url,
-    siteName: siteConfig.name,
+    siteName: siteConfig.siteName,
   },
 };
 
@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="#main"
           className="sr-only bg-paper-raised focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-xs focus:px-4 focus:py-2 focus:ring-2 focus:ring-accent-rust"
         >
-          Skip to content
+          Skip to main content
         </a>
         <SiteHeader />
         <main id="main" className="flex-1">

@@ -1,13 +1,13 @@
 # Project Curiosity — Technical Rules
 
-| Field | Value |
-|---|---|
-| **Document ID** | FOUNDATION-TECH-001 |
-| **Status** | Proposed |
-| **Version** | 1.0 |
-| **Date** | 2026-08-03 |
-| **Owner** | Alex Griffiths |
-| **Extends** | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
+| Field           | Value                                             |
+| --------------- | ------------------------------------------------- |
+| **Document ID** | FOUNDATION-TECH-001                               |
+| **Status**      | Proposed                                          |
+| **Version**     | 1.0                                               |
+| **Date**        | 2026-08-03                                        |
+| **Owner**       | Me                                                |
+| **Extends**     | [ADR-001](../adr/ADR-001-Engineering-Notebook.md) |
 
 ## 1. Purpose
 

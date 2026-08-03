@@ -1,12 +1,12 @@
 # IMP-008: First Vertical Slice
 
-| Field | Value |
-|---|---|
-| **Document ID** | IMP-008 |
-| **Status** | Accepted |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | UX-001, UX-002, UX-003, IMP-007 |
+| Field            | Value                           |
+| ---------------- | ------------------------------- |
+| **Document ID**  | IMP-008                         |
+| **Status**       | Accepted                        |
+| **Owner**        | Me                              |
+| **Last Updated** | 2026-08-03                      |
+| **Depends On**   | UX-001, UX-002, UX-003, IMP-007 |
 
 ## Objective
 

@@ -1,11 +1,11 @@
 # CNT-001: Experiment Schema
 
-| Field | Value |
-|---|---|
-| **Status** | Draft |
-| **Owner** | Me |
-| **Last Updated** | 2026-08-03 |
-| **Depends On** | ADR-001, UX-003, CONTENT-STRATEGY |
+| Field            | Value                             |
+| ---------------- | --------------------------------- |
+| **Status**       | Draft                             |
+| **Owner**        | Me                                |
+| **Last Updated** | 2026-08-03                        |
+| **Depends On**   | ADR-001, UX-003, CONTENT-STRATEGY |
 
 ## Purpose
 
@@ -14,6 +14,14 @@ Define the structured metadata and narrative sections required to represent an e
 ## Recommended Storage
 
 Use Markdown or MDX with validated front matter. The implementation may use a schema library such as Zod, but this document defines the content contract rather than a library choice.
+
+## Implementation Mapping
+
+The current implementation (`content-collections.ts`) validates the canonical `state`
+vocabulary below under the front-matter key `status`, and records the investigation
+period as `startYear`/`endYear` with an optional `lastUpdated` month. The value
+vocabulary is shared verbatim; only these field names differ. Any further divergence
+must be reconciled here rather than worked around in components.
 
 ## Required Front Matter
 

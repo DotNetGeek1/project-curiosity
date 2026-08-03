@@ -1,11 +1,11 @@
 # User Journeys
 
-| Field | Value |
-|---|---|
-| **Document ID** | PRD-004 |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Owner** | I / repository maintainer |
+| Field                 | Value                     |
+| --------------------- | ------------------------- |
+| **Document ID**       | PRD-004                   |
+| **Status**            | Accepted                  |
+| **Version**           | 1.0                       |
+| **Owner**             | I / repository maintainer |
 | **Related documents** | PRD-002, PRD-003, PRD-008 |
 
 ## Journey 1: CV to interview decision
