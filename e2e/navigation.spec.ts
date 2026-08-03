@@ -60,3 +60,57 @@ test.describe('site shell', () => {
     );
   });
 });
+
+test.describe('experiment stories', () => {
+  test('Chronos explains the problem before the graph technology', async ({ page }) => {
+    await page.goto('/experiments');
+    await page.getByRole('link', { name: 'Chronos' }).click();
+
+    await expect(page).toHaveURL(/\/experiments\/chronos\/?$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Chronos' })).toBeVisible();
+    await expect(page.getByText('Growing', { exact: true })).toBeVisible();
+
+    for (const section of [
+      'The Question',
+      'The Problem',
+      'The Hypothesis',
+      'The Approach',
+      'Architecture',
+      'Trade-offs',
+      'What Went Wrong',
+      'Lessons',
+      'Current State',
+      'Next Questions',
+    ]) {
+      await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible();
+    }
+
+    // The reader must meet the need before the technology that answers it.
+    const body = await page.locator('article').innerText();
+    expect(body.indexOf('The Problem')).toBeLessThan(body.indexOf('Neo4j'));
+  });
+
+  test('Morris separates what is built from what is hypothesis', async ({ page }) => {
+    await page.goto('/experiments');
+    await page.getByRole('link', { name: 'Morris' }).click();
+
+    await expect(page).toHaveURL(/\/experiments\/morris\/?$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Morris' })).toBeVisible();
+    await expect(page.getByText('Escaped containment', { exact: true })).toBeVisible();
+
+    await expect(
+      page.getByRole('heading', { name: 'What Morris Cannot Do', exact: true })
+    ).toBeVisible();
+    await expect(page.getByText('Implemented and working')).toBeVisible();
+    await expect(page.getByText('Active hypotheses, not results')).toBeVisible();
+    await expect(page.getByText('Speculation, clearly labelled')).toBeVisible();
+  });
+
+  test('the reading guidance and diagram placeholders survive as asides', async ({ page }) => {
+    await page.goto('/experiments/morris');
+
+    const asides = page.locator('article aside');
+    await expect(asides.first()).toBeVisible();
+    await expect(page.getByText('Diagram not published yet').first()).toBeVisible();
+  });
+});

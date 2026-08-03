@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/container';
 import { PageHeader } from '@/components/ui/page-header';
 import { getNotes } from '@/lib/content';
+import { buildPageMetadata } from '@/lib/metadata';
 
-export const metadata: Metadata = {
-  title: 'Notes',
-  description: 'Shorter research notes, half-formed ideas and things worth writing down.',
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Research Notes',
+  description:
+    'Shorter observations, technical investigations and lessons connected to ongoing engineering experiments.',
+  path: '/notes',
+});
 
 export default function NotesPage() {
   const notes = getNotes();

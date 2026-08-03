@@ -17,40 +17,178 @@ repositoryPrivate: true
 
 ## The Question
 
-Encyclopaedias store history as documents. But history is not a set of documents, it is a
+This one did not start with a technology. It started with my wife wanting something that
+did not seem to exist: a way to see what was happening in different parts of the world at
+the same moment, and how the people and events involved were connected to each other.
+
+Encyclopaedias store history as documents. But history is not a set of documents. It is a
 set of relationships between people, places and events that shift over time.
 
 I wondered what happens if you model the relationships first and let the pages fall out of
 the graph.
 
-## Problem
+## The Problem
 
-_To be written._
+If you want to know about the Norman conquest, the internet serves you well. If you want to
+know what was happening in West Africa, China and Mesoamerica during the same decades, and
+whether any of it was connected, you are on your own. You end up with eight browser tabs,
+three timelines that disagree, and a mental model you have to rebuild every time you come
+back to it.
 
-## Hypothesis
+The gap is not a lack of information. It is that the information is stored as articles. An
+article is a good container for a narrative and a poor container for a question like "who
+else was alive when this person was, and did their lives intersect?" Answering that means
+reading dozens of documents and holding the dates in your head, because nothing in the
+storage format knows that two dates overlap.
 
-_To be written._
+Conventional timelines do not fix it either. A timeline is a single axis, usually a single
+region, and it flattens the thing I actually wanted: the connections that run sideways
+across places and forwards through time.
 
-## Approach
+## The Hypothesis
 
-_To be written._
+My hypothesis was that time and relationships should be first-class data rather than prose
+that happens to mention dates.
+
+If an event knows when it happened, where it happened, who was involved, and which other
+events it caused or followed, then "what else was happening then?" stops being a research
+task and becomes a query. The narrative can be generated from the structure, rather than
+the structure being inferred from the narrative.
+
+That was the bet. It is worth saying plainly that it was a bet about modelling, not a claim
+about accuracy — a graph is only as trustworthy as the sources behind it, and I
+underestimated how much of the work that sentence hides.
+
+## The Approach
+
+I started by trying to model a single century in one region by hand. Not a system, just
+entities and relationships written down, to find out whether the model I had in my head
+survived contact with real historical detail.
+
+It did not, which was useful. Working through a small set of real events forced the
+questions I had been avoiding: what counts as an event as opposed to a period, whether a
+person and a role are the same thing, and what to do with a date that is a guess.
+
+From there the work went in three passes:
+
+1. **Model the shape.** Entities for people, places, events, periods and sources, with
+   typed relationships between them and time attached to the relationship rather than only
+   to the entity.
+2. **Load real data.** Import enough material to break the model, then fix the model rather
+   than the data.
+3. **Make it explorable.** Build a mobile application on top, because the interaction I
+   wanted — follow a thread, then follow it sideways — is a good fit for a phone and a bad
+   fit for a page of search results.
 
 ## Architecture
 
-_To be written._
+The core is a temporal knowledge graph in Neo4j. Nodes represent people, places, events,
+periods and sources. Edges represent participation, causation, succession, location and
+attribution, and it is the edges that carry the time information, because the interesting
+question is usually when a relationship held rather than when a thing existed.
 
-## Interesting Challenges
+A .NET service sits in front of the graph and owns ingestion, entity resolution and the
+read API. PostgreSQL holds the things a graph is bad at: import batches, source metadata,
+provenance records and the flat lookups that back search. The mobile application talks only
+to the .NET API, never to the graph directly, so the traversal patterns stay something I can
+change.
 
-_To be written._
+Three decisions did most of the work:
+
+1. **Time lives on relationships.** A person node does not carry a single date range. "Was
+   ruler of" carries the range, "was present at" carries the moment. This made overlap
+   queries natural and made a lot of my earlier modelling look naive.
+2. **Uncertainty is part of the model, not a caveat in the text.** Every temporal value has
+   a precision and a confidence alongside it, so "1066" and "some time in the eleventh
+   century" are different values rather than the same value with a footnote.
+3. **Every claim points at a source.** Facts are attached to the source that asserts them.
+   Two sources may assert contradictory things, and the graph stores both.
+
+<Callout variant="note" title="Diagram not published yet">
+  I have deliberately not included an architecture diagram here. The version I have describes an
+  earlier shape of the ingestion pipeline, and publishing a diagram I know to be out of date is
+  worse than publishing none. It will appear once I have verified it against the current code.
+</Callout>
+
+## Trade-offs
+
+- **Graph versus relational.** A relational schema would have been faster to build and
+  easier to host. It would also have made every question I actually cared about a
+  multi-join exercise. I took the operational cost of a graph database to keep the
+  traversals cheap, and I still hold both stores, which is complexity I own.
+- **Modelling fidelity versus getting anything finished.** Every historical edge case
+  suggests another distinction worth making. I repeatedly had to decide that a distinction
+  was real, interesting, and out of scope.
+- **Generated narrative versus authored narrative.** Text assembled from the graph is
+  consistent and slightly lifeless. Authored text reads better and drifts out of sync with
+  the data. I have not resolved this; the current answer is that the graph is the source of
+  truth and prose is a view over it, which I am not fully happy with.
+- **Depth versus scope.** Modelling one region well and one century deeply produces
+  something demonstrably useful. Modelling everything shallowly produces something that
+  looks impressive and answers nothing. I chose depth, which means large parts of history
+  are simply absent.
 
 ## What Went Wrong
 
-_To be written._
+My first model treated dates as values. Every event had a start and an end, both timestamps,
+and I moved on to the interesting parts feeling quite pleased.
+
+Historical dates are not timestamps. They are claims of varying precision, sometimes
+mutually exclusive, frequently expressed relative to something else, and occasionally
+recorded in a calendar that no longer applies. My schema could store "1066" perfectly and
+could not store "probably in the spring, according to one chronicle written a century later"
+at all. So I did what the schema encouraged: I picked whichever date looked most
+authoritative and discarded the rest.
+
+That quietly destroyed the thing the project existed for. Once you have thrown away the
+disagreement between sources, you cannot show a user that historians are unsure, and you
+cannot explain why two parts of the graph contradict each other. Worse, the confident single
+date makes the system look more reliable than it is, which is the failure mode I would least
+want in something about history.
+
+The fix meant reworking the temporal model into precision and confidence carried on the
+relationship, and reworking ingestion so that conflicting claims are both retained and
+attributed. It was the largest rewrite in the project and it came from a modelling decision
+I made in an afternoon without thinking hard enough.
+
+Entity resolution went wrong in a smaller, more embarrassing way. Matching people across
+sources by name and approximate date collapses distinct people with common names into one
+node and splits one person recorded under variant spellings into several. I now treat
+resolution as a suggestion that needs review rather than something to run automatically.
 
 ## Lessons
 
-_To be written._
+- The hard part of a knowledge graph is not the graph. It is deciding what the nodes are,
+  and that decision is a domain question rather than a technical one.
+- Uncertainty has to be a type in the model. If you represent doubt as prose, the first
+  query that touches the data will discard it.
+- Attaching claims to sources is not academic tidiness. It is what makes contradiction
+  representable instead of a bug.
+- Building a small part of the domain properly taught me far more than planning the whole of
+  it. The hand-modelled century is still the best thing I did on this project.
+- A system that presents a confident answer where the evidence is thin is not merely
+  incomplete, it is misleading. That applies well beyond history.
 
-## What's Next
+## Current State
 
-_To be written._
+Chronos is growing rather than finished. The graph model and the .NET service work,
+ingestion runs, and the mobile application supports the exploration pattern the project was
+built for. It is a personal prototype: I have not published it, I have not measured it
+against anyone else's needs beyond the original request, and the coverage of history in it
+is narrow by design.
+
+The repository is private, largely because source licensing and attribution for the imported
+material still needs a proper review before any of it goes public. I am happy to walk
+through the model, the API and the parts of the ingestion pipeline that are mine.
+
+## Next Questions
+
+- What is the clearest single example of a connection an ordinary timeline hides? I still do
+  not have the one demonstration that makes the whole idea obvious in ten seconds.
+- How should uncertainty be shown in the interface? The model represents it well and the
+  application still renders it as a caveat, which is the old mistake in a new place.
+- Where should the boundary sit between the authored graph and generated assistance? A
+  language model can produce fluent history, and fluent history is exactly what this project
+  was meant to be sceptical of.
+- Which parts of the mobile application are stable enough to show, and what would I need to
+  check about source licensing before showing them?

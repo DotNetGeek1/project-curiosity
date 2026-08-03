@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Container } from '@/components/layout/container';
+
+// Next.js already marks this route noindex; only the copy needs setting.
+export const metadata: Metadata = {
+  title: 'Page not found',
+  description: 'That page could not be found on this engineering notebook.',
+};
 
 export default function NotFound() {
   return (

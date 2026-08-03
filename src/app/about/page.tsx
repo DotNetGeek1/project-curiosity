@@ -3,13 +3,15 @@ import Link from 'next/link';
 
 import { Container } from '@/components/layout/container';
 import { PageHeader } from '@/components/ui/page-header';
+import { buildPageMetadata } from '@/lib/metadata';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'How I Ended Up Here',
   description:
     'How curiosity, technical leadership and a habit of building first shaped the way I approach engineering.',
-};
+  path: '/about',
+});
 
 export default function AboutPage() {
   return (

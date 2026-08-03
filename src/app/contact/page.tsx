@@ -3,12 +3,14 @@ import Link from 'next/link';
 
 import { Container } from '@/components/layout/container';
 import { PageHeader } from '@/components/ui/page-header';
+import { buildPageMetadata } from '@/lib/metadata';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Contact',
   description: 'Get in touch about an experiment, an idea or a walkthrough of a private project.',
-};
+  path: '/contact',
+});
 
 export default function ContactPage() {
   return (
