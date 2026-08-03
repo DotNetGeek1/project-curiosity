@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   experimentStatusLabels,
   formatExperimentPeriod,
+  getExperimentBySlug,
   getExperiments,
   getNotes,
 } from '@/lib/content';
@@ -67,5 +68,89 @@ describe('experiment status vocabulary', () => {
 describe('getNotes', () => {
   it('excludes drafts outside development', () => {
     expect(getNotes().every((note) => !note.draft)).toBe(true);
+  });
+});
+
+/**
+ * CNT-001 requires a featured experiment to be a complete story, and defines the
+ * narrative contract every complete story must satisfy.
+ */
+const completeStories = ['deliveryiq', 'chronos', 'morris'];
+
+const requiredSections = [
+  /^## The Problem$/m,
+  /^## The Hypothesis$/m,
+  /^## The Approach$/m,
+  /^## Architecture$/m,
+  /^## Trade-offs$/m,
+  /^## What Went Wrong$/m,
+  /^## Lessons$/m,
+  /^## Current State$/m,
+  /^## Next Questions$/m,
+];
+
+function bodyOf(slug: string): string {
+  const experiment = getExperimentBySlug(slug);
+  expect(experiment, `${slug} should exist`).toBeDefined();
+  return experiment!.content;
+}
+
+describe('experiment narrative completeness', () => {
+  it('leaves no placeholder text in a featured experiment', () => {
+    for (const experiment of getExperiments().filter((candidate) => candidate.featured)) {
+      expect(experiment.content, `${experiment.slug} still has placeholder sections`).not.toMatch(
+        /To be written/i
+      );
+    }
+  });
+
+  for (const slug of completeStories) {
+    it(`gives ${slug} every section the narrative contract requires`, () => {
+      const body = bodyOf(slug);
+
+      expect(body).toMatch(/^## The Question$/m);
+      for (const section of requiredSections) {
+        expect(body, `${slug} is missing ${section.source}`).toMatch(section);
+      }
+    });
+  }
+});
+
+describe('Morris safety claims', () => {
+  it('states plainly what Morris cannot do', () => {
+    const body = bodyOf('morris');
+
+    expect(body).toMatch(/^## What Morris Cannot Do$/m);
+    expect(body).toMatch(/cannot modify its own source/);
+  });
+
+  it('separates implemented work from hypotheses and speculation', () => {
+    const body = bodyOf('morris');
+
+    expect(body).toMatch(/Implemented and working/);
+    expect(body).toMatch(/Active hypotheses, not results/);
+    expect(body).toMatch(/Speculation, clearly labelled/);
+  });
+
+  it('avoids claiming general intelligence or autonomy', () => {
+    const body = bodyOf('morris');
+
+    for (const forbidden of [
+      /\bAGI\b/,
+      /general(ly)? intelligent\b/i,
+      /artificial general intelligence/i,
+      /fully autonomous/i,
+      /self-improving/i,
+    ]) {
+      expect(body, `Morris must not claim ${forbidden.source}`).not.toMatch(forbidden);
+    }
+  });
+
+  it('keeps credentials and unsafe operational detail out of the write-up', () => {
+    const body = bodyOf('morris');
+
+    for (const forbidden of [/api[_-]?key/i, /password/i, /[A-Za-z]:\\\\/, /\bsudo\b/]) {
+      expect(body, `Morris must not include ${forbidden.source}`).not.toMatch(forbidden);
+    }
   });
 });

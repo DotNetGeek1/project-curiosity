@@ -16,6 +16,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'tablet-chrome', use: { ...devices['Galaxy Tab S4 landscape'] } },
     { name: 'mobile-safari', use: { ...devices['iPhone 13'] } },
   ],
   // The site is a static export, so e2e runs against the built output rather

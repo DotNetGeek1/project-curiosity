@@ -1,9 +1,16 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Container } from '@/components/layout/container';
 import { ExperimentCard } from '@/components/ui/experiment-card';
 import { getExperiments } from '@/lib/content';
+import { buildPageMetadata } from '@/lib/metadata';
 import { siteConfig } from '@/lib/site-config';
+
+export const metadata: Metadata = buildPageMetadata({
+  description: siteConfig.description,
+  path: '/',
+});
 
 const currentObsessions = [
   'agent workflows that are useful rather than theatrical',

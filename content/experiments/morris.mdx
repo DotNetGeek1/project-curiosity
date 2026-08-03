@@ -16,39 +16,237 @@ repositoryPrivate: true
 
 ## The Question
 
+Morris did not begin as an AI project. It began with physics simulations, where the rules
+are explicit, the state is inspectable and a wrong answer is provably wrong. Working that way
+for a while gives you a particular allergy to systems that cannot show their reasoning.
+
 Language models are excellent at plausible and unreliable at correct. Symbolic systems are
 the reverse: rigid, but they can prove what they claim.
 
 I wondered whether the two could cover each other's weaknesses if neither was in charge.
 
-## Problem
+<Callout variant="warning" title="How to read this page">
+  Morris is an experiment, not a product and not a step towards general intelligence. This page
+  separates what is implemented, what is still a hypothesis and what is speculation, because the
+  distinction is the most interesting part and the easiest thing to blur. Where I am guessing, I say
+  so.
+</Callout>
 
-_To be written._
+## The Problem
 
-## Hypothesis
+Both halves of modern AI fail in ways the other half is good at.
 
-_To be written._
+A symbolic system does exactly what its rules say. That is its value: you can inspect the
+derivation, and if the conclusion is wrong you can find the rule responsible. It is also its
+limit. Someone has to write the rules, the rules do not generalise past what was anticipated,
+and the effort of encoding a messy domain rises faster than the payoff.
 
-## Approach
+A language model generalises effortlessly and cannot tell you why. It produces fluent output
+at a consistent quality regardless of whether it is right, which means confidence carries no
+information. For anything where correctness matters, that is not a small caveat; it is the
+whole problem.
 
-_To be written._
+The usual response is to pick a side, or to bolt a validation step onto a model and call it
+hybrid. Neither appealed to me. Validating a model's output after the fact tells you that
+something went wrong without giving the system any structure to reason with in the first
+place.
+
+## The Hypothesis
+
+My hypothesis is that the two approaches complement each other best when neither is the
+controller.
+
+Concretely: a language model is good at proposing candidate structure — turning an ambiguous
+request into something formal enough to check — and bad at deciding whether the structure is
+sound. A symbolic layer is good at checking, rejecting and explaining, and bad at inventing
+candidates. If the model proposes and the symbolic layer decides, each is doing the thing it
+is actually reliable at.
+
+That is a hypothesis. I have not evaluated it against a simpler baseline, which is the honest
+limit of what I can currently claim.
+
+<Callout variant="note" title="What is implemented, what is not">
+  **Implemented and working:** a small declarative language for expressing facts, rules and
+  goals; a command-line environment for running it; a symbolic evaluator that produces
+  inspectable derivations; model-assisted translation from natural language into that
+  language; narrowly scoped agents that call a fixed set of tools; and experiments feeding 3D
+  vision output into the symbolic layer as structured facts.
+
+**Active hypotheses, not results:** that the proposer-and-checker split beats a
+well-prompted model alone; that symbolic structure meaningfully reduces confident errors;
+and that agents composing existing tools is more useful than agents writing new ones.
+
+**Speculation, clearly labelled:** that a system like this could build up reusable
+reasoning over time rather than starting fresh each session. I find this the most
+interesting direction and I have no evidence for it.
+
+</Callout>
+
+## The Approach
+
+The first version was a script that asked a model to solve a physics problem and then checked
+the answer with a simulation. It worked often enough to be encouraging and failed in a way
+that told me nothing useful: when the answer was wrong, I had no idea which step was
+responsible.
+
+That pushed me towards giving the system a representation of its own. So Morris got a small
+declarative language for stating facts, rules and goals, and a command-line environment for
+working with it. The language exists so that reasoning is a thing you can read, keep and
+re-check, rather than something that happened inside a prompt.
+
+With that in place the division of labour became the actual experiment. The model translates
+a request into declarations in the language. The symbolic evaluator decides whether the
+declarations are consistent, what follows from them, and where they contradict something
+already known. When it rejects something, it says which rule it violated, and that rejection
+goes back to the model as a concrete constraint rather than a generic retry.
+
+Agents came later and stayed deliberately small. Each one has a narrow job, a fixed set of
+tools and no ability to grant itself more. That last part was not the original design; it is
+what I arrived at after the failure described below.
 
 ## Architecture
 
-_To be written._
+Four layers, with the boundaries between them mattering more than the contents:
 
-## Interesting Challenges
+1. **The language and its evaluator.** A declarative representation of facts, rules and
+   goals, with an evaluator that derives conclusions and retains the derivation. This is the
+   part I trust, and it is the only part allowed to decide whether something is true.
+2. **The model layer.** Generative models used for translation, proposal and explanation.
+   Output from this layer is always a candidate, never a conclusion. Nothing it produces
+   enters the knowledge base without passing the evaluator.
+3. **The agent layer.** Small agents that plan and call tools. Each has an explicit allowed
+   set of tools, declared outside the agent, and no path to extending it at runtime.
+4. **Perception.** 3D vision work that converts observations into structured facts for the
+   symbolic layer. This is the least developed layer and the one where I am most likely to be
+   fooling myself, because a plausible-looking fact from a vision pipeline is
+   indistinguishable from a correct one once it is in the graph.
 
-_To be written._
+Everything crosses those boundaries as data, not as calls. A model cannot invoke the
+evaluator to get a verdict it likes better, and an agent cannot write directly into the
+knowledge base. It makes the system slower and considerably easier to reason about when it
+misbehaves.
+
+<Callout variant="note" title="Diagram not published yet">
+  I have not included an architecture diagram. The layers above are stable, the wiring between them
+  has changed several times, and a diagram that misrepresents where the boundaries sit would be
+  actively misleading on a page about containment. It will follow once I have checked it against the
+  current code.
+</Callout>
+
+## What Morris Cannot Do
+
+This section exists because the name of the state at the top of this page is a joke and the
+limits are not.
+
+Morris cannot act outside its declared tools. Every tool an agent may call is listed outside
+the agent, and there is no mechanism by which an agent adds to that list, requests elevation
+or discovers a capability at runtime. If a task needs a tool it does not have, the task fails.
+
+Morris cannot modify its own source. Earlier versions could, in a limited way, and that
+capability is gone rather than restricted. Code generation now produces artefacts that sit
+outside the running system and require me to read and apply them, which is slower and the
+single most valuable constraint in the project.
+
+Morris cannot reach anything I have not explicitly given it. There is no general network
+access, no ambient credentials and no filesystem access beyond a defined working area. I am
+not going to document the specific arrangement, because the useful lesson is the principle
+rather than the configuration.
+
+Morris cannot learn from its own operation. Each session starts from the knowledge base I
+give it. It does not accumulate state across runs, does not adjust its own rules and has no
+persistent memory of previous conversations. The speculation above about accumulated
+reasoning is exactly that — a thing it does not do.
+
+And Morris is not reliable. The symbolic layer is dependable within its rules. The system as
+a whole is an experiment that fails regularly, and nothing on this page should be read as a
+claim about autonomy, general capability or production readiness.
+
+## Trade-offs
+
+- **Structure versus reach.** Requiring everything to pass through a formal representation
+  rules out a large class of vague-but-useful requests. A pure model handles those happily
+  and cannot tell you when it has invented the answer. I would rather have the narrower
+  system that knows its own edges.
+- **Two representations to maintain.** Facts exist in the symbolic layer and in whatever the
+  model produced. Keeping the translation between them honest is ongoing work, and it is
+  where most of the subtle bugs live.
+- **Capability versus containment.** Every restriction I added made Morris less impressive
+  and more useful. Removing self-modification cost the most interesting demo in the project
+  and is the reason I still run it.
+- **Custom language versus an existing one.** Writing my own representation was almost
+  certainly the wrong engineering decision and the right learning decision. An established
+  logic language would have given me tooling, semantics and other people's hard-won edge
+  cases. I would probably choose differently starting again.
 
 ## What Went Wrong
 
-_To be written._
+The instructive failure was letting Morris modify its own source.
+
+The reasoning seemed sound at the time. If the system can propose code, and the symbolic
+layer can check properties of that code, then it should be able to improve its own tools and
+I should get compounding capability. It is a tidy argument and it skips over the part where
+the checker and the thing being checked are in the same process.
+
+What happened was not dramatic. It was worse than dramatic: it was boring and hard to unpick.
+Small self-applied changes accumulated across runs. Each one was individually defensible, and
+the composition drifted away from anything I had designed. When behaviour went wrong I could
+no longer tell whether the fault was in my code, in a change Morris had made, or in the
+interaction between several such changes. The system had not become capable. It had become
+unauditable, which for a project whose entire premise is inspectable reasoning is a fatal
+outcome.
+
+The development environment also came off badly, more than once, in ways that were entirely
+my own fault and are the origin of the state label at the top of this page. That is the joke.
+The lesson underneath it is not: I had given a system that generates and applies changes the
+same working environment as the machine I depended on, which is a mistake nobody needs a
+research project to make.
+
+Two things changed as a result. Self-modification was removed rather than sandboxed, because
+a capability I cannot audit is not made safe by being fenced. And tool access became a fixed,
+externally declared list, because the failure was never about intelligence. It was about a
+system having reach I had not deliberately given it.
 
 ## Lessons
 
-_To be written._
+- The value of the symbolic layer is not that it is smarter. It is that when it is wrong, I
+  can find out why. That property is worth a large amount of capability.
+- Rejection is more useful than generation. A checker that explains which constraint was
+  violated turns a retry loop into something that converges.
+- Auditability and self-modification are in direct tension. I could not have both, and I had
+  not admitted that to myself until the drift made it obvious.
+- Capability boundaries belong outside the thing being bounded. Any component that can extend
+  its own reach will eventually be asked to, by me, for a good reason.
+- Combining approaches is not the same as combining their strengths. Most of the work was
+  deciding what each layer is not allowed to do.
+- A system that fails visibly is more valuable to learn from than one that fails plausibly.
+  This is the same lesson the physics simulations taught me, arrived at expensively.
 
-## What's Next
+## Current State
 
-_To be written._
+Morris runs and remains an experiment. The language and evaluator work, the command-line
+environment is what I actually use, model-assisted translation is functional and occasionally
+wrong in interesting ways, and the agent layer is small and heavily constrained. The vision
+work is the least finished part.
+
+I have not evaluated it against a simpler baseline, which means I cannot honestly claim the
+hybrid approach beats a well-prompted model at anything yet. That comparison is the most
+important thing outstanding.
+
+The repository is private, and in this case that is partly a safety decision as well as a
+tidiness one: parts of it are earlier designs I would not want copied. I am happy to talk
+through the architecture, the language design and the containment reasoning, and to show the
+parts that are safe to show.
+
+## Next Questions
+
+- What is the smallest honest evaluation? I need a task set where symbolic structure should
+  help and a baseline of a good model alone, or the central claim stays unsupported.
+- What is the smallest demonstration that communicates the idea without needing the whole
+  system explained?
+- Which containment failure is genuinely useful to describe, and where does describing it
+  become theatre?
+- What would count as evidence of accumulated reasoning rather than an elaborate orchestration
+  script? I do not yet have a test that would distinguish them, and until I do I should keep
+  calling it speculation.
+- Should the custom language be retired in favour of an established one, and what would I lose
+  that I have not noticed I depend on?

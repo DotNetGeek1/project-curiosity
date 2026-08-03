@@ -4,12 +4,14 @@ import { Container } from '@/components/layout/container';
 import { ExperimentCard } from '@/components/ui/experiment-card';
 import { PageHeader } from '@/components/ui/page-header';
 import { getExperiments } from '@/lib/content';
+import { buildPageMetadata } from '@/lib/metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Experiments',
   description:
     'Questions, prototypes and systems spanning product engineering, AI, knowledge graphs, games and speculative software architecture.',
-};
+  path: '/experiments',
+});
 
 export default function ExperimentsPage() {
   const experiments = getExperiments();

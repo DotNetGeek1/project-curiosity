@@ -7,6 +7,7 @@ import { MdxRenderer } from '@/components/mdx/mdx-renderer';
 import { LabStatus } from '@/components/ui/lab-status';
 import { TechTags } from '@/components/ui/tech-tags';
 import { formatExperimentPeriod, getExperimentBySlug, getExperiments } from '@/lib/content';
+import { buildPageMetadata } from '@/lib/metadata';
 
 type ExperimentPageProps = {
   params: Promise<{ slug: string }>;
@@ -24,10 +25,12 @@ export async function generateMetadata({ params }: ExperimentPageProps): Promise
     return {};
   }
 
-  return {
+  return buildPageMetadata({
     title: experiment.title,
     description: experiment.summary,
-  };
+    path: `/experiments/${experiment.slug}`,
+    openGraphType: 'article',
+  });
 }
 
 export default async function ExperimentPage({ params }: ExperimentPageProps) {

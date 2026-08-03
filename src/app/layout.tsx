@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
+import { canonicalUrl } from '@/lib/metadata';
 import { siteConfig } from '@/lib/site-config';
 import '@/styles/globals.css';
 
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: siteConfig.title,
     description: siteConfig.description,
-    url: siteConfig.url,
+    url: canonicalUrl('/'),
     siteName: siteConfig.siteName,
   },
 };

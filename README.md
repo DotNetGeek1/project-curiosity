@@ -106,15 +106,16 @@ went wrong.
 ## Deployment
 
 Pushes to `main` build and deploy to Azure Static Web Apps via
-`.github/workflows/deploy.yml`. Pull requests get a preview environment, which is torn down
-when the pull request closes.
+`.github/workflows/azure-static-web-apps-delightful-beach-00deded10.yml`. Pull requests get a
+preview environment, which is torn down when the pull request closes.
 
 Azure routing, headers and the 404 fallback are configured in
 `public/staticwebapp.config.json`, which Next copies into `out/` at build time.
 
 ### One-time setup
 
-1. Create an Azure Static Web App resource with the deployment source set to "Other" so
-   Azure does not generate its own workflow.
-2. Copy the deployment token into the GitHub repository secret
-   `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+1. Create an Azure Static Web App resource and link it to this GitHub repository. Azure
+   creates the deploy workflow and adds a repository secret named
+   `AZURE_STATIC_WEB_APPS_API_TOKEN_<suffix>`.
+2. If the secret is ever rotated, copy the new deployment token from the Azure portal
+   (**Manage deployment token**) into that repository secret.

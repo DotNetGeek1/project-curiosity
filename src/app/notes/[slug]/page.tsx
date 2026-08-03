@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Container } from '@/components/layout/container';
 import { MdxRenderer } from '@/components/mdx/mdx-renderer';
 import { getNoteBySlug, getNotes } from '@/lib/content';
+import { buildPageMetadata } from '@/lib/metadata';
 
 type NotePageProps = {
   params: Promise<{ slug: string }>;
@@ -22,10 +23,12 @@ export async function generateMetadata({ params }: NotePageProps): Promise<Metad
     return {};
   }
 
-  return {
+  return buildPageMetadata({
     title: note.title,
     description: note.summary,
-  };
+    path: `/notes/${note.slug}`,
+    openGraphType: 'article',
+  });
 }
 
 export default async function NotePage({ params }: NotePageProps) {

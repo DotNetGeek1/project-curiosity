@@ -12,7 +12,8 @@
 
   --color-ink: #23211d;
   --color-ink-muted: #57534a;
-  --color-ink-faint: #8a8378;
+  /* Warm grey, darkened to 4.8:1 on paper so faint text still meets WCAG AA. */
+  --color-ink-faint: #6f6960;
 
   --color-rule: #d9d1c1;
 
