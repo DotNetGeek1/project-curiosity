@@ -82,6 +82,10 @@ From there the work went in three passes:
    then follow it sideways — is a good fit for a phone and a bad fit for a page of search
    results.
 
+![Hand-drawn interface sketch of the public web app: a world map with three connected event markers on different continents, a timeline scrubber set to 1066, and a side panel asking what else was happening](/images/experiments/chronos/map-timeline.webp)
+
+_The exploration pattern the whole project exists for: pick a moment, see what else was happening, follow the connections sideways._
+
 ## Architecture
 
 The core is a temporal knowledge graph modelled inside PostgreSQL rather than in a
@@ -116,11 +120,9 @@ Three decisions did most of the work:
    retained; a human decides what gets promoted into the graph, and the audit trail keeps
    the losing claim rather than deleting it.
 
-<Callout variant="note" title="Diagram not published yet">
-  I have deliberately not included an architecture diagram here. The version I have describes an
-  earlier shape of the ingestion pipeline, and publishing a diagram I know to be out of date is
-  worse than publishing none. It will appear once I have verified it against the current code.
-</Callout>
+![Hand-drawn architecture sketch of Chronos: the public and admin web apps and the mobile app in front of a FastAPI service, with PostgreSQL and Redis behind it and the Wikidata dumps volume underneath](/images/experiments/chronos/architecture.webp)
+
+_The shape of the system as it runs today: three clients in front of one API, one database, and the dump volume the miner feeds from. Drawn by hand on purpose — a sketch admits it is a simplification in a way a polished diagram does not._
 
 ## Trade-offs
 
@@ -168,6 +170,10 @@ overwritten. The migration that did it still carries the comment "data reset is
 acceptable" — true only because the mistake was caught in week one. A month later it would
 have been a long, careful data migration instead of a reset.
 
+![Hand-drawn sketch of the temporal model: an event carrying start, end, precision and confidence; two sources asserting contradictory dates as claims that are both kept; and a timeline with a fuzzy region around 1066](/images/experiments/chronos/temporal-model.webp)
+
+_What the rebuild bought: dates carry precision and confidence, contradictory claims are both kept and attributed, and a human decides what gets promoted._
+
 Entity resolution went wrong in a smaller, more embarrassing way. The article-harvesting
 pipeline creates person entities from text at the same time as the Wikidata miner imports
 the same people under their proper identifiers, so the graph ended up with duplicates —
@@ -207,6 +213,10 @@ there are three clients: the public map-and-timeline web app, the admin app, and
 mobile application, which covers both the original follow-a-thread exploration and the
 museum companion. Generated overviews, story beats and a conversational interface exist on
 top of the graph.
+
+![Hand-drawn pipeline sketch of the Wikidata dump miner: dump catalog, downloader, decompress and streaming parser feeding an entity filter, transformer, bulk loader and validator, fanning out to events, places and edges publishers, with a dashed second pass labelled reference resolver](/images/experiments/chronos/wikidata-pipeline.webp)
+
+_The ingestion pipeline, stage by stage. The dashed loop is the reference resolver: a second pass over the dump to pick up entities the first pass discovered it needed._
 
 It is a personal prototype: I have not published it, I have not measured it against anyone
 else's needs beyond the original request, and its coverage inherits both the strengths and
