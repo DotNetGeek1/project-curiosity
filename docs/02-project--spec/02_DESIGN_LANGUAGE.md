@@ -1,13 +1,14 @@
-
 # Design Language
 
 Mood:
+
 - Engineering notebook
 - Research journal
 - Physics lab
 - Museum archive
 
 Avoid:
+
 - Neon
 - Glassmorphism
 - SaaS gradients

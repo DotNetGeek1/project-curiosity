@@ -1,19 +1,21 @@
-
 # Product Specification
 
 ## Audience
+
 - Engineering Managers
 - Staff/Principal Engineers
 - CTOs
 - Curious engineers
 
 ## Goals
+
 - Complement the CV.
 - Demonstrate engineering judgement.
 - Showcase experiments.
 - Document learning.
 
 ## Navigation
+
 - Home
 - Experiments
 - Notes
@@ -22,6 +24,7 @@
 - Contact
 
 ## Homepage
+
 Hero:
 Things I Wondered About
 
@@ -29,6 +32,7 @@ Below:
 Featured experiment timeline
 
 Experiment cards contain:
+
 - Question
 - Summary
 - Status
@@ -38,6 +42,7 @@ Experiment cards contain:
 ## Experiment Pages
 
 Sections:
+
 1. I wondered if...
 2. Problem
 3. Hypothesis

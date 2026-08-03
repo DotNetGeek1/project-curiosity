@@ -1,15 +1,15 @@
 # ADR-001: Project Curiosity Is an Engineering Notebook
 
-| Field | Value |
-|---|---|
-| **Document ID** | ADR-001 |
-| **Title** | Project Curiosity Is an Engineering Notebook |
-| **Status** | Accepted |
-| **Version** | 1.0 |
-| **Date** | 2026-08-03 |
-| **Owner** | Alex Griffiths |
-| **Decision Type** | Product, content and experience architecture |
-| **Applies To** | Website, documentation, content model, design system and implementation |
+| Field             | Value                                                                   |
+| ----------------- | ----------------------------------------------------------------------- |
+| **Document ID**   | ADR-001                                                                 |
+| **Title**         | Project Curiosity Is an Engineering Notebook                            |
+| **Status**        | Accepted                                                                |
+| **Version**       | 1.0                                                                     |
+| **Date**          | 2026-08-03                                                              |
+| **Owner**         | Alex Griffiths                                                          |
+| **Decision Type** | Product, content and experience architecture                            |
+| **Applies To**    | Website, documentation, content model, design system and implementation |
 
 ## 1. Decision Summary
 
@@ -261,14 +261,14 @@ Because the site is an engineering notebook, its information architecture will u
 
 ### 8.1 Primary public concepts
 
-| Conventional label | Project Curiosity label |
-|---|---|
-| Projects | Experiments |
-| Blog | Research Notes or Observations |
-| About | How I Ended Up Here |
-| Last updated | Last investigated |
-| Status | Current state |
-| Portfolio | Engineering notebook |
+| Conventional label | Project Curiosity label        |
+| ------------------ | ------------------------------ |
+| Projects           | Experiments                    |
+| Blog               | Research Notes or Observations |
+| About              | How I Ended Up Here            |
+| Last updated       | Last investigated              |
+| Status             | Current state                  |
+| Portfolio          | Engineering notebook           |
 
 These terms should be used when they improve the experience, not as forced novelty. Clear language wins when a playful label would confuse navigation.
 

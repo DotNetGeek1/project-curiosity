@@ -1,6 +1,7 @@
 # Design System
 
 Components:
+
 - Project cards
 - Editorial layouts
 - Sticky sidebars

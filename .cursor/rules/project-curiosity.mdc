@@ -1,0 +1,42 @@
+---
+description: Core conventions for the DotNetGeek engineering notebook site
+alwaysApply: true
+---
+
+# Project Curiosity
+
+This is an engineering notebook, not a portfolio. Every page answers "how does Alex think?"
+
+## Never
+
+- Add neon, glassmorphism, SaaS gradients or flashy animation.
+- Prioritise visuals over the story.
+- Add generic portfolio sections (testimonials, skill bars, "hire me" banners).
+- Add a dependency without a clear reason it beats the built-in option.
+
+## Always
+
+- Story before technology. Show the question before the solution.
+- Preserve the editorial layout and prefer whitespace over decoration.
+- Keep components small, reusable and typed. No `any`.
+- Accessibility first: semantic HTML, visible focus, keyboard reachable, honour
+  `prefers-reduced-motion`.
+- Animation should explain something, never entertain.
+
+## Stack conventions
+
+- Next.js App Router with `output: 'export'`. Every route must be statically renderable;
+  no server actions, route handlers or runtime data fetching.
+- Content lives in `content/` as MDX and is validated by `content-collections.ts`. Add
+  fields to the Zod schema rather than reading frontmatter ad hoc.
+- Styling is Tailwind v4 using the tokens in `src/styles/globals.css`. Use the semantic
+  token names (`paper`, `ink`, `accent-rust`) rather than raw hex or default palette colours.
+- Server Components by default. Add `'use client'` only where interactivity requires it.
+- Imports use the `@/` alias for anything under `src/`.
+
+## Writing
+
+Follow `docs/02-project--spec/04_CONTENT_STYLE_GUIDE.md`: honest, curious, technical.
+Use "I wondered if...", "I tried...", "This failed...", "I discovered...".
+Never use "revolutionary" or "groundbreaking". Every experiment write-up must include
+something that did not work.

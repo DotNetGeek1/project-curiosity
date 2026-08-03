@@ -1,7 +1,7 @@
-
 # DotNetGeek Portfolio — Vision
 
 ## Mission
+
 Build an engineering notebook rather than a portfolio.
 
 The site should answer one question:

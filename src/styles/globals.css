@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/*
+ * Design tokens follow docs/02-project--spec/02_DESIGN_LANGUAGE.md:
+ * warm paper, charcoal, muted earthy accents. No neon, no gradients.
+ */
+@theme {
+  --color-paper: #f5f1e8;
+  --color-paper-raised: #fbf8f1;
+  --color-paper-sunken: #ece5d8;
+
+  --color-ink: #23211d;
+  --color-ink-muted: #57534a;
+  --color-ink-faint: #8a8378;
+
+  --color-rule: #d9d1c1;
+
+  --color-accent-rust: #a8452a;
+  --color-accent-clay: #b5734a;
+  --color-accent-moss: #5c6f4a;
+  --color-accent-ink-blue: #3c5670;
+  --color-accent-ochre: #b8893a;
+
+  --font-serif: var(--font-editorial), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-technical), ui-monospace, monospace;
+
+  --text-display: 4rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-rust);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-ochre);
+    color: var(--color-paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
