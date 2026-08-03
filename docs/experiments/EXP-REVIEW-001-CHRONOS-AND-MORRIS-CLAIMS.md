@@ -54,6 +54,62 @@ defend in an interview should not survive this pass.
 accuracy of imported historical data, any claim of uniqueness, user feedback beyond the
 original request, and any suggestion that the application is publicly available.
 
+### Resolution — 2026-08-03
+
+The Chronos page was rewritten from the code on the same day this verification ran. The
+Neo4j/.NET architecture, the "both stores" trade-off, the time-on-relationships decision,
+the timestamps-first failure story and the hand-modelled century were removed or replaced
+with what the code actually shows. The failure section now tells the true story: the
+week-one schema reset (migration 001) that promoted participants from a JSON blob to real
+edges and added the claims/evidence layer, the label-only entity merge, and the
+container-filesystem media loss. The AI features (generated overviews, story beats, chat)
+and the museum companion are now stated as shipped rather than hypothetical. I confirmed
+the project began in 2025; `startYear` is corrected and `lastUpdated` is set to `2026-07`
+(last meaningful commit 2026-07-30). The table below is the evidence trail.
+
+### Verification results — checked against the code, 2026-08-03
+
+I reviewed the actual repository (`everything-history`, README title "Chronos (formerly
+Everything History / World History Map & Timeline)"). Verdicts per row above:
+
+| Claim                                                                 | Verdict                                   | Evidence in the code                                                                                                                                                                                                                                                                                                                                  |
+| --------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wife's request as the origin                                          | Cannot verify from code                   | Personal history. The repo's own pitch matches the framing: "explore what was happening anywhere in the world at the same point in time" (`world-history-project.md`).                                                                                                                                                                                |
+| Hand-modelled century before building                                 | Not supported                             | The first commits (2025-12-12) scaffold the whole platform from a written spec. Nothing in the repo shows a hand-modelled starting point. Only I can say whether this happened before the repo existed.                                                                                                                                               |
+| Neo4j graph + .NET service                                            | **False**                                 | There is no Neo4j and no .NET anywhere. The API is Python/FastAPI; the graph lives in PostgreSQL (`core.entity`, `core.edge`, `core.claim`, `core.evidence`). The project spec lists C#/.NET 8 only as the rejected alternative.                                                                                                                      |
+| PostgreSQL holds import batches, metadata, provenance, search lookups | Misleading                                | PostgreSQL holds _everything_, including the graph itself, plus PostGIS geo data and pgvector embeddings. It is the only store apart from Redis (cache/queue).                                                                                                                                                                                        |
+| Mobile app talks only to the API                                      | Confirmed (except ".NET")                 | `apps/mobile/src/lib/api.ts` — all traffic goes through the HTTP API. The API is FastAPI, not .NET.                                                                                                                                                                                                                                                   |
+| Time is carried on relationships                                      | **False — inverted**                      | Time lives on event _nodes_ (`core.event.start_year/end_year` + `precision` + `confidence`). Edges carry `confidence` and `weight`; only `held_position` edges carry years, in a JSONB `meta` field.                                                                                                                                                  |
+| Every temporal value has precision and confidence                     | Partly confirmed                          | Both exist as first-class enum columns (`precision`: day/month/year/decade/century/approx; `confidence`: low/medium/high) — but on events, not relationships. Wikidata ingest genuinely maps source precision through.                                                                                                                                |
+| Facts attached to sources, contradictions retained                    | Partly confirmed                          | `core.claim` + `core.evidence` with proposed/accepted/rejected statuses and a curator-gated review API (`routers/claims.py`). Contradicting claims can coexist in the claims layer; the event/edge itself ends up with one accepted value. Entities, events and edges also carry `sources` JSONB.                                                     |
+| Both stores still in use                                              | **False**                                 | There is one store. The "graph versus relational" trade-off as written describes a decision that was never made — the real decision was the opposite: model the graph _inside_ Postgres.                                                                                                                                                              |
+| First model stored dates as timestamps                                | Not supported                             | The earliest schema in the repo (2025-12-15) already stores years as integers with precision and confidence. No timestamp-based model, and no trace of the described rewrite, exists in this repo's history.                                                                                                                                          |
+| Temporal rework was the largest rewrite                               | Not supported                             | See above. There _was_ a full schema reset (migration 001, "Implement data update schema upgrades", 2025-12-22) which added the claims/evidence layer — that is the true "largest rewrite" candidate.                                                                                                                                                 |
+| Entity resolution merged/split people; now review-gated               | Partly confirmed                          | Real: migration 015 and `routers/entity_maintenance.py` merge auto-created entities with Wikidata ones, and `audit.merge_log` + `jobs.curation_queue` exist. But matching is by label only (not name + date), migration 015 ran as an automated bulk merge (2026-01-04), and the admin flow is preview-then-execute rather than per-candidate review. |
+| Hand-modelled century is the best thing I did                         | Cannot verify                             | Judgement, but it depends on the hand-modelled century having happened — see above.                                                                                                                                                                                                                                                                   |
+| Ingestion runs; mobile supports the exploration pattern               | Confirmed, but incomplete                 | The Wikidata dump miner is real and actively developed (resume support landed in migration 024). The mobile app has Explore/Timeline/Event/Person screens — and also a large museum-companion side (exhibit scanning, plaque OCR, tours) the page never mentions.                                                                                     |
+| Repository private because of licensing review                        | Private: confirmed. Reason: cannot verify | Anonymous GitHub access returns 404. Licence columns exist throughout (`raw.raw_item.license`, `core.evidence.license`), so the concern is real in the data model; the motive is mine to confirm.                                                                                                                                                     |
+
+**Additional problems the checklist did not anticipate:**
+
+- **Frontmatter `startYear: 2022`** — the repository history starts 2025-12-12, with active
+  work in Dec 2025, Jan 2026 and Jul 2026. Unless there was an earlier incarnation outside
+  this repo, the year is wrong.
+- **Frontmatter technologies** list Neo4j and .NET. Both must go; FastAPI/Python, Redis and
+  React (web + Expo mobile) are the honest list.
+- **The AI omission.** The page treats generated narrative as a future question ("where
+  should the boundary sit between the authored graph and generated assistance?"). In the
+  code it is a shipped feature: events store `ai_overview` and `story_beats` columns, there
+  is an AI gateway service, an AI chat screen in the mobile app, LLM-based harvest from
+  Wikipedia, LLM entity-kind inference, embeddings and semantic search, and AI causality/
+  force mining. Presenting this as an open question misrepresents the system.
+- **The scope omission.** The write-up says "I chose depth… one region, one century". The
+  code is a _global_ map-and-timeline atlas ingesting whole Wikidata dumps, with eras from
+  prehistory onwards. The depth-versus-scope trade-off as written describes the opposite of
+  what was built.
+- **Unmentioned surfaces.** Two React web apps (public map/timeline and admin curation) and
+  the museum-companion features are absent from the page, which mentions only the mobile app.
+
 **Frontmatter:** `lastUpdated` is not set, because I do not know when Chronos was last
 genuinely worked on and the field renders as "Last investigated". Add it once you know.
 
