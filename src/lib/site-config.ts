@@ -4,8 +4,10 @@ export const siteConfig = {
   title: 'Alex Griffiths — Engineering Notebook',
   description:
     'An engineering notebook. Experiments, research notes and the questions that started them.',
-  url: 'https://dotnetgeek.co.uk',
-  github: 'https://github.com/dotnetgeek',
+  url: 'https://portfolio.dotnetgeek.co.uk',
+  // The dotnetgeek username was already taken on GitHub.
+  githubUsername: 'DotNetGeek1',
+  github: 'https://github.com/DotNetGeek1',
   email: 'hello@dotnetgeek.co.uk',
 } as const;
 

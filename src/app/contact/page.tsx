@@ -41,7 +41,7 @@ export default function ContactPage() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                {siteConfig.handle}
+                {siteConfig.githubUsername}
               </Link>
             </dd>
           </div>
