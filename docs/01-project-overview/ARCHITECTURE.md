@@ -1,6 +1,7 @@
 # Architecture
 
 Suggested stack:
+
 - Next.js
 - react
 - TypeScript

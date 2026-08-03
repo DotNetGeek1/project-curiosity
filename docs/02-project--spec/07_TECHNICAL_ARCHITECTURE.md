@@ -1,4 +1,3 @@
-
 # Technical Architecture
 
 Stack
@@ -12,6 +11,7 @@ SVG
 Content Collections
 
 Future
+
 - Graph visualisation
 - AI search
 - GitHub integration

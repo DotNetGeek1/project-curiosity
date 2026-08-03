@@ -1,14 +1,13 @@
-
 # Information Architecture
 
 Home
 
 Experiments
-    DeliveryIQ
-    Chronos
-    Morris
-    SafeNet
-    Token Burn
+DeliveryIQ
+Chronos
+Morris
+SafeNet
+Token Burn
 
 Research Notes
 

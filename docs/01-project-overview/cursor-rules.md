@@ -1,11 +1,13 @@
 # Cursor Rules
 
 Never:
+
 - Add neon gradients
 - Add glassmorphism
 - Add unnecessary animation
 
 Always:
+
 - Prioritise readability
 - Tell the engineering story
 - Prefer SVG diagrams

@@ -1,7 +1,7 @@
-
 # Content Style Guide
 
 Always explain:
+
 - Why
 - Trade-offs
 - Learning
