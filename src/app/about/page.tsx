@@ -15,10 +15,14 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function AboutPage() {
   return (
-    <Container width="prose">
-      <PageHeader eyebrow="How I ended up here" title="I have always learned by building" />
+    <Container variant="content">
+      <PageHeader
+        eyebrow="How I ended up here"
+        title="I have always learned by building"
+        image={{ src: '/images/about/about-collage.webp', width: 800, height: 533 }}
+      />
 
-      <div className="prose max-w-none pb-12 prose-neutral prose-headings:font-serif prose-headings:font-normal prose-a:text-accent-rust">
+      <div className="prose max-w-2xl pb-12 prose-neutral prose-headings:font-serif prose-headings:font-normal prose-a:text-accent-rust">
         <p>
           I am a software engineer and technical leader with more than twenty-five years of
           experience, but the part of the job I still enjoy most is the beginning: the point where a

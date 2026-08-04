@@ -16,7 +16,7 @@ export function NotebookSpine({ label, className }: NotebookSpineProps) {
   return (
     <div className={cn('relative hidden lg:block', className)}>
       <span aria-hidden="true" className="absolute inset-y-0 left-0 w-px bg-rule" />
-      <div className="sticky top-10 flex justify-center">
+      <div className="sticky top-48 flex justify-center">
         <p className="rotate-180 font-mono text-xs tracking-[0.2em] text-ink-faint uppercase [writing-mode:vertical-rl]">
           {label}
         </p>

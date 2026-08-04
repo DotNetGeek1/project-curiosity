@@ -17,11 +17,12 @@ export default function NotesPage() {
   const notes = getNotes();
 
   return (
-    <Container>
+    <Container variant="content">
       <PageHeader
         eyebrow="Engineering Notebook"
         title="Research notes"
         description="Shorter pieces. Half-formed ideas, reading notes and things I want to remember."
+        image={{ src: '/images/notes/notes-collage.webp', width: 800, height: 533 }}
       />
 
       <section className="pb-16">

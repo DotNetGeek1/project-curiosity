@@ -40,7 +40,7 @@ export default async function NotePage({ params }: NotePageProps) {
   }
 
   return (
-    <Container width="prose">
+    <Container variant="content" width="prose">
       <div className="py-12">
         <Link
           href="/notes"

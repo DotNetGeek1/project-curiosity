@@ -14,7 +14,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function ContactPage() {
   return (
-    <Container width="prose">
+    <Container variant="content" width="prose">
       <PageHeader
         eyebrow="Contact"
         title="Want to talk about one of these experiments?"

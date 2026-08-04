@@ -2,6 +2,7 @@ export const siteConfig = {
   name: 'Alex Griffiths',
   handle: 'DotNetGeek',
   siteName: 'Project Curiosity',
+  notebookSpineLabel: 'PROJECT CURIOSITY - Engineering notebook',
   title: 'Things I Wondered About — Engineering experiments by DotNetGeek',
   description:
     'An engineering notebook about difficult questions, prototypes, systems, mistakes and the things I learned while building them.',
