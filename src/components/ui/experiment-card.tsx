@@ -26,7 +26,9 @@ export function ExperimentCard({ experiment, index }: ExperimentCardProps) {
               {experiment.title}
             </Link>
           </h3>
-          <p className="max-w-prose text-sm text-accent-rust">{experiment.question}</p>
+          <p className="max-w-prose text-sm text-accent-rust">
+            I wondered if {experiment.question}
+          </p>
           <p className="max-w-prose text-ink-muted">{experiment.summary}</p>
           <TechTags items={experiment.technologies} className="pt-1" />
         </div>
