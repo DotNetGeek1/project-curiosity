@@ -23,95 +23,86 @@ repositoryPrivate: true
 lastUpdated: '2026-03'
 ---
 
-## The Question
+## The Questions
 
-Every delivery tool I have used is very good at recording work and much less good at
-improving it. A sprint board can tell you a story is In Progress; it cannot tell you the
-story was never ready to be started. Missing acceptance criteria, hidden dependencies
-and architectural questions usually surface after implementation has begun, which is the
-most expensive possible time to discover them.
+DeliveryIQ didn't begin with a product idea. It began with a series of questions that kept resurfacing as I experimented with AI-assisted development.
 
-I wanted to explore whether AI could be used earlier in the delivery lifecycle — not to
-generate code, but to improve the quality of work before it reaches developers.
+- If an engineering team is using AI-accelerated development tools, how does the rest of the delivery team keep pace?
+- Could Scrum Bot, Code Bot and BA Bot. Three separate side projects I originally built to understand agent-based workflows—be combined into a single platform that was genuinely useful?
+- What information would an AI actually need before it could confidently pick up a piece of work, plan it, implement it and test it without constantly asking for more context?
+- Could software delivery itself be redesigned around AI, rather than simply adding AI to existing delivery tools?
+
+It started with me tring to create better AI coding assistant, but ending up tring to understand what software delivery might look like if AI became another member of the engineering team.
+
+---
 
 ## The Problem
 
-Judging whether work is genuinely ready requires context that rarely lives in one place.
-Part of the picture is in Azure DevOps. The original business intent might be in
-Confluence. Architectural knowledge lives in the codebase, and operational constraints
-often exist only in the heads of whoever has been on the team longest.
+As I worked on personal projects and started adopting AI tooling (mainly Cursor) into my day-to-day work, I noticed something unexpected.
 
-Most delivery tooling treats those sources independently. As a result, readiness becomes
-a judgement call made manually during refinement — or discovered after development has
-already started.
+I found myself spending far less time thinking about _how_ to implement something and much more time thinking about _what_ I was trying to build, _why_ it mattered and _what assumptions I was making_. I naturally started documenting ideas differently, capturing decisions, constraints and intent much earlier than I normally would.
 
-The obvious fix — bolting a chat window onto an existing tracker — did not convince me.
-A chatbot can answer questions about work items, but it does not change the quality of
-the work entering a sprint. Asking better questions of unready work felt like polishing
-the problem.
+The better that context became, the better the AI performed.
+
+That immediately exposed a much larger problem.
+
+Most software delivery processes aren't designed to preserve context. Requirements live in Azure DevOps or Jira. Architecture is documented somewhere else. Conversations happen in Teams or Slack. Design decisions are scattered across documents, and a surprising amount of knowledge exists only in the heads of the people who have worked on the system the longest.
+
+As experienced engineers, we naturally join those dots together. We build up an understanding of the codebase over months or years, remember why certain decisions were made and instinctively know where to look when something doesn't quite make sense.
+
+AI doesn't have that advantage.
+
+It doesn't slowly build experience or intuition in the way a developer does. Every conversation starts from scratch, and it can only reason with the context it's been given.
+
+Then I had one of those moments where you suddenly realise you've been looking at a familiar problem from a completely different angle.
+
+I'd spent years in software development wondering why we needed so many refinement sessions, project kick-offs, design workshops and architecture meetings.
+
+AI made the answer painfully obvious.
+
+They're all trying to solve the same problem.
+
+**Context.**
+
+The difference is that we are incredibly good at filling in the gaps without even realising we're doing it. AI can't. Missing context can completly changes the decisions it makes.
+
+The more I thought about it, the more I realised I was trying to solve a software delivery problem that AI had simply made impossible to ignore.
+
+---
 
 ## The Hypothesis
 
-My hypothesis was that if work items were evaluated against an explicit readiness rubric
-before development began, many of the questions normally discovered during
-implementation could be resolved during planning instead, where they are cheap.
+That eventually led me to a surprisingly simple hypothesis.
 
-The second half of the hypothesis took me three rebuilds to accept: the delivery tracker
-should not be replaced. DeliveryIQ sits alongside it — Azure DevOps stays as the system
-of record, and AI provides analysis, review and recommendations over synchronised
-delivery data.
+> **Software delivery should optimise for preserving context.**
 
-I want to be clear about the framing: this is still a hypothesis. The platform
-demonstrates the workflow; I have not yet measured whether it improves delivery
-outcomes.
+Most delivery platforms do an excellent job of helping teams organise work. They track tasks, estimate effort, manage backlogs and give everyone visibility of what's happening.
 
-<Callout variant="note" title="Current implementation">
-  **Core capabilities:** Azure DevOps and Confluence synchronisation; readiness scoring
-  against a four-category rubric; deterministic quality gates; development and test
-  prompt generation; five role-based review agents; documentation and code retrieval
-  using pgvector; human-controlled write-back to Azure DevOps; a Model Context Protocol
-  (MCP) server exposing platform tools to external agents; and delivery-stage specific
-  views.
+The part that interested me was everything that sits around those work items.
 
-**Experimental capabilities:** an orchestration kernel with adaptive model routing,
-which ships disabled by default; and a coding agent that can commit and open pull
-requests.
+Why does this feature exist?
 
-</Callout>
+What assumptions have already been made?
 
-## The Approach
+Which architectural decisions have already been agreed?
 
-The system centres on a single workflow. A work item syncs in from Azure DevOps together
-with its supporting Confluence documentation, and a model scores the combined context
-against a rubric with four categories:
+What constraints does the implementation need to respect?
 
-- intent and clarity
-- acceptance criteria and testability
-- dependencies and integration impact
-- technical and non-functional requirements
+Those questions often have answers, but they're spread across documents, conversations, meeting notes and people's experience. As engineers we naturally piece that information together as we work. AI only sees what we explicitly give it.
 
-Each category contributes to an overall readiness score. Rather than letting the model
-decide what happens next, DeliveryIQ separates judgement from policy: the model performs
-the assessment, and deterministic thresholds — seventy overall, with minimum scores on
-acceptance criteria and one of the technical categories — decide what the resulting
-score is allowed to unlock.
+That made me wonder if the delivery process itself could start somewhere completely different.
 
-Work below the gate generates questions and recommendations, aimed at whoever can answer
-them. Work that passes can have implementation and test prompts generated, which a human
-then decides whether to apply back to Azure DevOps. The write-back is a button, not a
-background job, and it leaves an audit event behind.
+What if every project began by capturing everything known about the problem? The goals, assumptions, business context, technical constraints, design decisions and open questions. Almost like sitting down with a blank sheet of paper and writing out everything the team currently knows.
 
-Around that loop sit five review agents with single, narrow responsibilities — a tech
-lead, a non-functional-requirements specialist, a UX and product voice, a delivery
-manager and a designated sceptic — each reading the same work item from its own angle.
-Their purpose is not to rewrite requirements but to expose risks and missing information
-before implementation begins. The AI questions more than it writes, and the analyst
-keeps ownership of the words.
+From there, AI could help organise that information into architecture documents, design decisions, epics, features and user stories, while keeping every artefact linked back to the original thinking that produced it.
 
-![Hand-drawn sketch of the readiness loop: a work item and its linked wiki brief flowing into a model that scores four rubric categories, a deterministic gate checking the thresholds, a fail path returning questions to the analyst, and a pass path generating dev and test prompts that a human explicitly applies back to Azure DevOps](/images/experiments/deliveryiq/readiness-gate.webp)
+By the time a work item reached implementation, it would already carry the context needed for someone to understand not only **what** needed building, but **why** it existed, the constraints it had to respect and the quality standards it needed to meet.
 
-_The core delivery loop. The model proposes scores, deterministic rules decide what they
-unlock, and a person presses the button that writes anything back._
+The technology will continue to evolve, but the need for engineers to understand intent, constraints and context isn't going away. If those things can remain connected from the first conversation through to the final commit, then both humans and AI have a much better foundation for making good engineering decisions.
+
+That is what DeliveryIQ is really trying to explore.
+
+> **DeliveryIQ is an experiment in whether software delivery can be redesigned around preserving context.**
 
 ## Architecture
 
@@ -165,40 +156,104 @@ dashed boxes are the parts still on trial._
 
 ## What Went Wrong
 
-The biggest lesson was one of focus. What began as a readiness gate for one role
-accumulated review agents, retrieval, orchestration, a coding agent, an MCP server and a
-view for every stage of delivery. Each addition was individually interesting; together
-they risked distracting from the original question. The codebase is platform-sized. The
-evidence is still prototype-sized.
+Quite a lot, actually.
 
-The kernel is the clearest example. I built the most architecturally interesting
-component in the system — learned routing, verification passes, repair and escalation —
-and then shipped it turned off, because the direct path was already working and
-switching the product's spine onto it never became urgent. Building sophisticated
-infrastructure before validating the underlying hypothesis was probably the wrong order.
-A flag that ships disabled is a verdict, even when nobody says it out loud.
+Like most projects, DeliveryIQ turned out to be far bigger than I imagined when I started. Looking back, I massively underestimated how much work sits behind what sounds like a fairly simple idea.
 
-There is also a smaller defect I want on record: on the kernel path, a readiness run
-that comes back without a valid payload can still be marked succeeded, with the model
-name recorded as "stub". It is logged honestly, but a run that succeeds without a model
-is a silent fallback in a system whose entire pitch is that every output is accountable.
+"Create a readiness score."
 
-The broader lesson: generating AI outputs is relatively easy. Building trustworthy
-workflows around those outputs is where most of the engineering effort lies.
+That sounded easy enough. I could use a bit of machine learning, work out whether a work item is ready for development and away we go.
+
+Then I asked the awkward question.
+
+**What does "ready" actually look like?**
+
+That's when reality arrived. To train anything useful I'd need hundreds, probably thousands, of real work items that had been manually reviewed and scored. Not just scored, but annotated with _why_ they were good, _why_ they weren't, what information was missing, what assumptions had been made and what caused problems later on.
+
+I quickly realised I was no longer building AI model but signing myself up to become a full-time data curator and that suddenly didn't sound nearly as much fun.
+
+The current approach is much simpler. Instead of trying to predict whether something is ready from historical data, I let the planning agent try to produce an implementation plan. The readiness score is then based on how successfully it can plan the work and, more importantly, how many questions it has to ask before it can produce a sensible answer.
+
+It may not be not as clever as the original idea but it's also dramatically more practical.
+
+---
+
+The next lesson nearly gave me a heart attack.
+
+At one point I'd connected DeliveryIQ to a real Confluence instance through MCP. I wanted to test against real documentation because, let's be honest, that's always far more interesting than toy examples.
+
+While working in the Inception area I asked the AI to go through the project documentation, replace one term with another and remove references to an old concept.
+
+What I meant was:
+
+_"Update the documents inside DeliveryIQ."_
+
+What the AI understood was:
+
+_"Update every document you can find."_
+
+Luckily I stream the model's reasoning while it's working. I watched it happily discover its new Confluence tool, explain that it had found the relevant documents... and then start searching the company wiki instead of my local project.
+
+I've never disconnected a laptop from the network so quickly and to make things worse I happened to be in the office that day. Three other developers watched me suddenly close everything down and effectively pull the emergency stop on my laptop.
+
+My Tech lead looked over and asked:
+
+> "Should we be worried?"
+
+To be fair...
+
+...probably.
+
+Nothing was actually modified, but it taught me a lesson I'll probably never forget.
+
+**Never let agents anywhere near real systems until you've proved the safety rails.**
+
+The temptation to test against real data is incredibly strong because that's where all the interesting edge cases live.
+
+It's also where you discover whether your safeguards actually work or not in my case.
+
+---
+
+Another surprise was repository search.
+
+Initially I assumed exposing a repository through MCP would be enough. If the AI knew where every file lived, surely it could work everything else out.
+
+It turns out that's only half the story.
+
+Knowing where a file lives saves a bit of grep roulette but knowing how that file relates to the rest of the system is much more valuable.
+
+That pushed me away from simple repository indexing and towards hybrid search using PostgreSQL and vector embeddings. Instead of only retrieving files that matched the words in the prompt, I could start retrieving code that was semantically related to the problem being solved.
+
+Planning became noticeably better almost immediately.
+
+That lesson ended up influencing Chronos as well. Once you start thinking about relationships between information rather than documents themselves, it changes how you approach search entirely.
+
+---
+
+Probably the biggest lesson from the whole project is that building AI features is actually the easy part.
+
+Building systems that can trust those features, explain why they reached a conclusion and stop themselves doing something stupid... that's where the real engineering starts.
 
 ## Lessons
 
-- AI should assist delivery decisions rather than own them.
-- Deterministic policy belongs after probabilistic judgement, not before it. Scores are
-  cheap; what they unlock is where the discipline goes.
-- Existing delivery tooling is better extended than replaced. The versions of this idea
-  that tried to own the data model produced better demos and less adoptable tools.
-- Agents earn trust by asking questions, not by writing prose. The five reviewers are
-  useful precisely because none of them is allowed to be the author.
-- Auditability is cheapest as a snapshot. Recording exactly what the model saw answers
-  most disputes before they become philosophical.
-- An optional component is a component on trial, and the default value of its feature
-  flag is the interim verdict.
+- **Context is more valuable than code.** The biggest bottleneck wasn't generating code—it was giving both humans and AI enough context to make good engineering decisions. Preserving intent throughout the delivery process turned out to be far more important than generating another user story.
+
+- **Simple beats clever until you've proved the hypothesis.** I started by thinking about machine learning models and predictive readiness scoring. In practice, letting the planning agent attempt the work and measuring how many questions it had to ask produced a far simpler system that is currently much more useful.
+
+- **Building the dataset can be harder than building the AI.** Before you can train or evaluate anything, you need to define what "good" actually looks like. Creating a high-quality labelled dataset quickly became a much bigger piece of work than building the models themselves.
+
+- **Keep autonomous agents in a sandbox until you've proved the safety rails.** Watching an AI happily prepare to update a company's Confluence instance was all the reminder I needed that powerful tools need strong boundaries. Real data is invaluable for testing, but only once the guard rails are in place.
+
+- **Knowing where the code is isn't enough.** Exposing a repository through MCP saved a bit of grep roulette, but combining repository indexing with vector search and semantic relationships dramatically improved planning and retrieval. Understanding how parts of the system relate to each other matters more than simply finding files.
+
+- **Extend existing delivery tools rather than replacing them.** Every version of DeliveryIQ that tried to become the system of record produced a better demo but a less practical product. Working alongside Azure DevOps instead of replacing it made the platform much easier to adopt.
+
+- **AI should provide judgement, not authority.** The most useful agents weren't the ones writing requirements—they were the ones asking difficult questions. AI is very good at identifying gaps and inconsistencies. Humans should still own the decisions.
+
+- **Trust comes from transparency.** Every AI decision should be explainable. Recording exactly what the model saw, how it reached a conclusion and what was written back makes debugging and challenging AI decisions significantly easier.
+
+- **Feature flags are honest.** If a component ships disabled for months, it's usually telling you something. My orchestration kernel is architecturally interesting, but until it demonstrates clear value it's an experiment, not a core part of the product.
+- **Follow the evidence, even when it proves your original idea wrong.** Several parts of DeliveryIQ ended up being completely different to what I originally planned. Some of the ideas I was most excited about turned out not to matter, while simpler approaches consistently produced better results. That's exactly why I build prototypes in the first place.
 
 ## Current State
 
