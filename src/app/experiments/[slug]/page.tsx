@@ -51,7 +51,7 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
   const outline = getExperimentOutline(experiment);
 
   return (
-    <Container>
+    <Container variant="content">
       <div className="grid gap-12 py-10 lg:grid-cols-[12rem_minmax(0,1fr)_12rem] lg:gap-8 xl:grid-cols-[13rem_minmax(0,1fr)_14rem] xl:gap-12">
         {/*
          * The experiment header of UX-003 §1 — name, state, period, outline and
