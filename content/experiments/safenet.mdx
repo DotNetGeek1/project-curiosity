@@ -1,7 +1,7 @@
 ---
 title: SafeNet
-question: What might the web look like if protocols, identity and data rights were redesigned today?
-summary: A speculative systems project exploring Rust, new protocol ideas, distributed trust and a different relationship between people and their data.
+question: What would the web look like if we redesigned it today using everything we've learned since it began?
+summary: A long-running thought experiment exploring what a modern web could look like if identity, trust, provenance and user ownership were designed into the network from the beginning.
 status: prototype
 technologies:
   - Rust
@@ -21,19 +21,155 @@ repositoryPrivate: true
 
 ## The Question
 
-The web we have is the web that happened, not the web anyone designed. Identity, ownership
-and privacy were bolted on afterwards.
+The web we have today is the web that happened, not the web anyone sat down and designed.
 
-I wondered what a stack would look like if those were requirements on day one instead of
-patches on year thirty.
+Over the last thirty years we've continuously adapted it to solve new problems. Security was added. Identity evolved separately. Privacy became an application concern. Trust was pushed out to individual websites and platforms.
 
-## Problem
+Considering how all of that evolved, the web has done remarkably well.
 
-_To be written._
+It did leave me wondering though...
 
-## Hypothesis
+> **If we could start again today, with everything we've learned over the last thirty years, what would we build differently?**
 
-_To be written._
+SafeNet isn't an attempt to replace the Internet.
+
+It's a long-running engineering thought experiment.
+
+<Callout variant="note" title="Thought experiment">
+
+Unlike DeliveryIQ, which is grounded in a real engineering workflow, SafeNet is deliberately speculative.
+
+Some ideas have working prototypes.
+Some exist only as sketches and notes.
+Others may ultimately prove to be terrible ideas.
+
+That's exactly why the project exists.
+
+</Callout>
+
+---
+
+## The Problem
+
+I grew up alongside the web.
+
+I remember how exciting it was when suddenly anyone could publish ideas, learn almost anything and communicate with people on the other side of the world. It genuinely felt like one of humanity's greatest inventions.
+
+I still think it is.
+
+But somewhere along the way the incentives changed.
+
+Many services no longer exist simply because they're useful. Attention became the product. Personal information became something to collect and monetise. Advertising became the business model that shaped almost everything else.
+
+The result is a web full of tracking, duplicated identity, fake traffic, questionable information and websites that all solve the same problems independently.
+
+Every service wants me to create another account.
+
+Every service stores another copy of my personal information.
+
+Every service decides its own approach to identity, permissions and trust.
+
+AI has only made some of those problems more obvious.
+
+We're rapidly reaching a point where understanding where information came from is becoming just as important as the information itself.
+
+That left me wondering whether many of these problems actually belong much lower down the stack.
+
+Maybe they're not website problems.
+
+Maybe they're network problems.
+
+---
+
+## The Hypothesis
+
+The more I thought about it, the more I realised I wasn't really questioning websites.
+
+I was questioning the assumptions we've built the web on.
+
+One of those assumptions is that every website should be able to send executable code to my computer.
+
+That made perfect sense in the 1990s.
+
+Today it also creates one of the biggest attack surfaces on the Internet.
+
+SafeNet explores a different model.
+
+Instead of downloading HTML, JavaScript and whatever other code a website decides to send me, a SafeNet site would simply describe itself.
+
+Pages would be delivered as structured JSON describing content, layout, styling, interactions and data requirements. The SafeNet client would then render that description using its own built-in rendering engine.
+
+The experience could still include animations, responsive layouts, forms, 3D environments and everything people expect from modern applications.
+
+The difference is that websites wouldn't be able to execute arbitrary code on the client.
+
+That removes an enormous attack surface and gives the platform complete control over the capabilities available to every site.
+
+The browser also becomes something quite different.
+
+It's no longer just a window onto the Internet.
+
+It's a trusted application that understands identity, permissions, rendering and communication as part of the platform itself.
+
+Identity follows the same philosophy.
+
+Instead of every website collecting and storing my personal information, sites would request access to specific pieces of information when they genuinely needed them.
+
+Need my delivery address?
+
+Ask for it.
+
+Need proof that I'm over eighteen?
+
+Ask for that instead.
+
+Need my date of birth?
+
+Probably not.
+
+The information remains mine.
+
+The website is simply granted permission to use it.
+
+Changing my address becomes a single update instead of visiting dozens of different websites.
+
+Permissions become visible, auditable and revocable.
+
+Another idea I've been exploring is provenance.
+
+Every SafeNet site would publish a manifest describing where its information comes from, who owns it, whether AI was involved in creating it and how it has changed over time.
+
+The platform could then make that information visible before the user decides whether to trust what they're reading.
+
+I'm deliberately not trying to build a censorship system.
+
+The goal isn't deciding what's true.
+
+The goal is making provenance visible enough that people can make better informed decisions.
+
+The same thinking extends to the platform itself.
+
+SafeNet would define a set of platform rules that every published site agrees to.
+
+Not because I want to control the web, but because every platform already encodes a set of values.
+
+SafeNet simply makes those values explicit.
+
+Things like user privacy, transparency, provenance, identity and security become part of the platform rather than something every individual website has to reinvent.
+
+The funding model follows the same principle.
+
+I don't want the platform's incentives tied to advertising or engagement.
+
+A modest subscription feels like a much healthier relationship. If users pay for the network, the network works for its users.
+
+Finally, I've been exploring whether distributed ledger technologies have a role in supporting identity, permissions, ownership and digital rights.
+
+I don't know whether blockchain is the right answer.
+
+SafeNet exists so I can explore questions like that without pretending I already know the answer.
+
+> **SafeNet is an experiment in what the web might look like if trust, provenance and user ownership were designed into the platform from the very beginning.**
 
 ## Approach
 
