@@ -26,205 +26,191 @@ lastUpdated: '2026-03'
 ## The Question
 
 Every delivery tool I have used is very good at recording work and much less good at
-improving it. The board can tell you a ticket is In Progress; it cannot tell you the
-ticket was never ready to be started. The expensive failures — the missing acceptance
-criteria, the dependency nobody owned, the feasibility problem — surface mid-sprint,
-which is the most expensive possible time to learn about them.
+improving it. A sprint board can tell you a story is In Progress; it cannot tell you the
+story was never ready to be started. Missing acceptance criteria, hidden dependencies
+and architectural questions usually surface after implementation has begun, which is the
+most expensive possible time to discover them.
 
-So I wondered: what if the tool did the admin, and the humans did the thinking? Not a
-chatbot bolted onto a tracker, but a workflow with AI designed into it from the start.
+I wanted to explore whether AI could be used earlier in the delivery lifecycle — not to
+generate code, but to improve the quality of work before it reaches developers.
 
 ## The Problem
 
-Work items vary wildly in quality, and the knowledge needed to judge them does not live
-in the tracker. It lives in a wiki brief, in the codebase, and in the heads of whoever
-has been on the team longest. A board full of green columns can still be full of work
-that is not ready to build, and nothing in the tool will say so until a developer picks
-the ticket up and starts asking questions.
+Judging whether work is genuinely ready requires context that rarely lives in one place.
+Part of the picture is in Azure DevOps. The original business intent might be in
+Confluence. Architectural knowledge lives in the codebase, and operational constraints
+often exist only in the heads of whoever has been on the team longest.
+
+Most delivery tooling treats those sources independently. As a result, readiness becomes
+a judgement call made manually during refinement — or discovered after development has
+already started.
 
 The obvious fix — bolting a chat window onto an existing tracker — did not convince me.
-A chatbot can answer questions about the data, but it does not change what is allowed
-into a sprint. Asking better questions of unready work felt like polishing the problem.
+A chatbot can answer questions about work items, but it does not change the quality of
+the work entering a sprint. Asking better questions of unready work felt like polishing
+the problem.
 
 ## The Hypothesis
 
-My hypothesis was that if readiness were scored before work started — against an
-explicit rubric, with a hard gate on what the scores unlock — the expensive mid-sprint
-discoveries would move to before the sprint, where they are cheap. The system should ask
-its clarifying questions while the work is still a conversation, not an obligation.
+My hypothesis was that if work items were evaluated against an explicit readiness rubric
+before development began, many of the questions normally discovered during
+implementation could be resolved during planning instead, where they are cheap.
 
 The second half of the hypothesis took me three rebuilds to accept: the delivery tracker
-should not be replaced. The current version keeps Azure DevOps as the system of record
-and treats AI strictly as leverage over it.
+should not be replaced. DeliveryIQ sits alongside it — Azure DevOps stays as the system
+of record, and AI provides analysis, review and recommendations over synchronised
+delivery data.
 
-I want to be clear about the framing: this is still a hypothesis. I have not measured
-whether gated work gets interrupted less, and I am deliberately not claiming it until I
-can support it with evidence.
+I want to be clear about the framing: this is still a hypothesis. The platform
+demonstrates the workflow; I have not yet measured whether it improves delivery
+outcomes.
 
-<Callout variant="note" title="What is actually in the repository">
-  **Built and running:** synchronisation from Azure DevOps and Confluence into PostgreSQL;
-  readiness scoring against a four-category rubric with a deterministic quality gate;
-  generation of implementation and test prompts for work that passes the gate; five
-  role-based review agents; retrieval over the wiki and the codebase using pgvector;
-  write-backs to Azure DevOps that a human triggers explicitly, each one audited; and
-  persona-based views for the stages of delivery.
+<Callout variant="note" title="Current implementation">
+  **Core capabilities:** Azure DevOps and Confluence synchronisation; readiness scoring
+  against a four-category rubric; deterministic quality gates; development and test
+  prompt generation; five role-based review agents; documentation and code retrieval
+  using pgvector; human-controlled write-back to Azure DevOps; a Model Context Protocol
+  (MCP) server exposing platform tools to external agents; and delivery-stage specific
+  views.
 
-**Built and honestly on trial:** an orchestration kernel with learned, cost-aware model
-routing, which ships disabled by default; and a coding agent that can commit and open
-pull requests.
-
-**Previously claimed on this page, corrected:** Semantic Kernel does not appear anywhere
-in the repository — the kernel is one I wrote myself. There is no standup-transcript
-ingestion and no morning digest of blocked work; I described a pipeline that does not
-exist. And "no write access to anything" was never true of the current system.
+**Experimental capabilities:** an orchestration kernel with adaptive model routing,
+which ships disabled by default; and a coding agent that can commit and open pull
+requests.
 
 </Callout>
 
 ## The Approach
 
-I started with the narrowest loop I could defend. Work items sync in from Azure DevOps;
-the Confluence brief they came from is linked alongside them; a model scores each item
-against a rubric with four categories — intent and clarity, acceptance criteria and
-testability, dependencies and integration impact, technical notes and non-functional
-requirements — each worth twenty-five points. A deterministic gate sits after the model:
-seventy overall, at least fifteen on acceptance criteria, at least twelve on one of the
-technical categories. Nothing below the gate can have implementation prompts generated
-for it. Instead it gets questions, aimed at whoever can answer them.
+The system centres on a single workflow. A work item syncs in from Azure DevOps together
+with its supporting Confluence documentation, and a model scores the combined context
+against a rubric with four categories:
 
-When an item passes, the system drafts a development prompt and a test prompt, and a
-human decides whether either is written back to the work item. The write-back is a
-button, not a background job, and it leaves an audit event behind.
+- intent and clarity
+- acceptance criteria and testability
+- dependencies and integration impact
+- technical and non-functional requirements
 
-Around that loop I added reviewers: five agents with single, narrow responsibilities — a
-tech lead, a non-functional-requirements specialist, a UX and product voice, a delivery
+Each category contributes to an overall readiness score. Rather than letting the model
+decide what happens next, DeliveryIQ separates judgement from policy: the model performs
+the assessment, and deterministic thresholds — seventy overall, with minimum scores on
+acceptance criteria and one of the technical categories — decide what the resulting
+score is allowed to unlock.
+
+Work below the gate generates questions and recommendations, aimed at whoever can answer
+them. Work that passes can have implementation and test prompts generated, which a human
+then decides whether to apply back to Azure DevOps. The write-back is a button, not a
+background job, and it leaves an audit event behind.
+
+Around that loop sit five review agents with single, narrow responsibilities — a tech
+lead, a non-functional-requirements specialist, a UX and product voice, a delivery
 manager and a designated sceptic — each reading the same work item from its own angle.
-The design philosophy written at the top of that module is the one I hold to: the AI
-questions more than it writes, and the analyst keeps ownership of the words.
+Their purpose is not to rewrite requirements but to expose risks and missing information
+before implementation begins. The AI questions more than it writes, and the analyst
+keeps ownership of the words.
 
 ![Hand-drawn sketch of the readiness loop: a work item and its linked wiki brief flowing into a model that scores four rubric categories, a deterministic gate checking the thresholds, a fail path returning questions to the analyst, and a pass path generating dev and test prompts that a human explicitly applies back to Azure DevOps](/images/experiments/deliveryiq/readiness-gate.webp)
 
-_The loop the whole system is built around: the model proposes scores, a deterministic
-gate decides what they unlock, and a human presses the button that writes anything back.
-The dashed lines are the writes — every one of them is a person._
+_The core delivery loop. The model proposes scores, deterministic rules decide what they
+unlock, and a person presses the button that writes anything back._
 
 ## Architecture
 
-The current system is eight containers: a Next.js front end with a view per delivery
-stage, a .NET 8 core API that owns identity, the Azure DevOps and Confluence
-integrations and persistence, a Python FastAPI service that does the AI work, the
-orchestration kernel, the coding agent, PostgreSQL with pgvector, Redis for caching, and
-RabbitMQ for messaging between the services. The AI service also exposes the platform's
-tools over the Model Context Protocol, so an external agent can work with the same
-delivery data the UI shows.
+A Next.js front end provides a view per delivery stage. A .NET 8 core API owns identity,
+persistence and the Azure DevOps and Confluence integrations. A Python FastAPI service
+does the AI work — analysis, retrieval and prompt generation — using Azure AI Foundry
+models. Supporting services include PostgreSQL with pgvector for operational and vector
+data, Redis for caching and RabbitMQ for messaging between the services. The AI service
+also exposes the platform's tools over the Model Context Protocol, so an external agent
+can work with the same delivery data the UI shows.
 
-Model access goes through Azure AI Foundry to both Anthropic and OpenAI models, with an
-optional path to a locally hosted model for development. Routing between them is not a
-fixed map of cheap-model-for-this, strong-model-for-that. It is a cost-weighted bandit:
-each model carries a card of hand-written priors per task type, Thompson sampling picks
-a route, and feedback from completed tasks updates the posterior. Task classification —
-deciding what kind of work a request is — deliberately never touches a model at all; it
-is cheap heuristics, on the grounds that spending inference to decide how to spend
-inference is the wrong shape.
+Model routing is not a fixed map of cheap-model-for-this, strong-model-for-that. It is a
+cost-weighted bandit: each model carries hand-written priors per task type, Thompson
+sampling picks a route, and feedback from completed tasks updates the posterior. Task
+classification deliberately never touches a model — it is cheap heuristics, on the
+grounds that spending inference to decide how to spend inference is the wrong shape.
 
-Two decisions shaped everything else:
+Every scoring run is recorded with the model and provider that served it, a snapshot of
+the work item exactly as it was scored, and an audit event for anything applied back to
+Azure DevOps. When a score looks wrong, I can answer "what did it actually see?" — which
+is a different and better question than "why did it say that?"
 
-1. **The model proposes, the gate disposes.** An earlier version of this page said
-   deterministic rules run first and the model handles what is left. The code is the
-   other way round, and the code is right: the model does the reading and produces the
-   scores, and deterministic thresholds decide what those scores are allowed to unlock.
-   Judgement is cheap to generate; consequences are gated.
-2. **Every run leaves a trail.** Each scoring run is recorded with the model and
-   provider that served it, a snapshot of the work item exactly as it was scored, and an
-   audit event for anything applied back to Azure DevOps. When a score looks wrong, I
-   can answer "what did it actually see?" — which is a different and better question
-   than "why did it say that?"
+Alongside the core runtime sits the experimental orchestration kernel, responsible for
+adaptive routing, planning and verification. It runs, but it currently exists as an
+optional execution path while the simpler direct workflow remains the primary
+implementation. That separation is deliberate: experimentation should not complicate the
+product's main workflow until it demonstrates clear value.
 
 ![Hand-drawn architecture sketch of DeliveryIQ: a Next.js web app in front of a .NET core API and a Python AI service, PostgreSQL with pgvector, Redis and RabbitMQ behind them, Azure DevOps and Confluence outside the boundary as the systems of record, Azure AI Foundry models to the side, and the orchestration kernel and coding agent drawn with dashed borders because they ship disabled](/images/experiments/deliveryiq/architecture.webp)
 
-_The third rebuild as it actually runs. Azure DevOps sits outside the boundary on
-purpose — it is the system of record, and the platform holds synchronised copies rather
-than the truth. The dashed boxes are the parts still on trial._
+_The current architecture. Azure DevOps sits outside the boundary on purpose — it is the
+system of record, and the platform holds synchronised copies rather than the truth. The
+dashed boxes are the parts still on trial._
 
 ## Trade-offs
 
-- **Integrating versus rebuilding.** Earlier versions of this experiment wanted to own
-  the delivery model. The current one concedes that the tracker your team already uses
-  is the system of record, and pays for that concession in synchronisation code:
-  snapshots, pending-push states, and a careful line between local edits and remote
-  truth. What it buys is a tool a real team could adopt without migrating anything.
-- **Autonomy versus trust.** Everything that writes to the tracker is a human-triggered
-  apply step. Except the coding agent, which can commit and raise pull requests, and
-  which I keep at the far end of the leash behind its own review gates. Holding both of
-  those positions at once is uncomfortable, and I notice that the part of the system I
-  trust least is the part with the most autonomy.
-- **Learned routing versus a fixed map.** The bandit is more honest than a hand-written
-  routing table — it admits routing is an empirical question. But its cold-start priors
-  are numbers I wrote myself, which means today it is mostly my judgement wearing a
-  Bayesian costume. It only becomes better than a fixed map once there is enough
-  feedback, and a single-team prototype generates feedback slowly.
-- **A kernel versus a function call.** The orchestration kernel — classify, plan,
-  execute, verify, repair — is the most architecturally interesting thing in the
-  repository, and the flag that enables it ships set to false. Every flow therefore has
-  two code paths, one direct and one orchestrated, and I maintain both. That is a real
-  cost I am paying for an option I have not yet exercised.
+- **Integrate rather than replace.** Keeping Azure DevOps as the system of record costs
+  real synchronisation code — snapshots, pending-push states, and a careful line between
+  local edits and remote truth. What it buys is a tool a real team could adopt without
+  migrating anything.
+- **AI judgement, deterministic policy.** Models are good at interpreting ambiguous
+  information and less suited to making operational decisions. DeliveryIQ uses AI for
+  assessment and conventional software for enforcement.
+- **Questions over automation.** Automatically rewriting requirements risks replacing
+  missing information with plausible-looking text. Returning targeted questions keeps
+  ownership with the analyst while still accelerating refinement.
+- **Research versus product.** The orchestration kernel and coding agent explore more
+  autonomous workflows, but the central hypothesis is about delivery readiness. Those
+  components stay isolated until they justify their complexity — which means every flow
+  has two code paths, one direct and one orchestrated, and I maintain both.
 
 ## What Went Wrong
 
-The most instructive failure was not in the code. It was on this page. The previous
-version of this write-up said the system ingested standup transcripts and produced a
-morning digest of blocked work, that Semantic Kernel orchestrated the agents, and that
-nothing had write access to anything. The repository contains none of those things.
-They were plans from an earlier phase that had quietly turned into memories — the same
-failure I caught on Morris, which apparently I need to keep re-learning: writing a page
-against the repository is a stronger audit than any recollection.
+The biggest lesson was one of focus. What began as a readiness gate for one role
+accumulated review agents, retrieval, orchestration, a coding agent, an MCP server and a
+view for every stage of delivery. Each addition was individually interesting; together
+they risked distracting from the original question. The codebase is platform-sized. The
+evidence is still prototype-sized.
 
-The kernel is the second failure, and it is the over-engineering kind. I built the
-cleverest component in the system — learned routing, verification passes, repair and
-escalation — and then shipped it turned off, because the direct path was already working
-and switching the product's spine onto the new one never became urgent. A flag that
-ships disabled is a verdict, even when nobody has said it out loud.
+The kernel is the clearest example. I built the most architecturally interesting
+component in the system — learned routing, verification passes, repair and escalation —
+and then shipped it turned off, because the direct path was already working and
+switching the product's spine onto it never became urgent. Building sophisticated
+infrastructure before validating the underlying hypothesis was probably the wrong order.
+A flag that ships disabled is a verdict, even when nobody says it out loud.
 
-The third one is small and I flagged it deliberately: on the kernel path, a readiness
-run that comes back without a valid payload can still be marked succeeded, with the
-model name recorded as "stub". It is logged honestly — the word stub is right there in
-the run record — but a run that succeeds without a model is the Morris silent-fallback
-lesson wearing a new coat, in a system whose entire pitch is that every output is
-accountable.
+There is also a smaller defect I want on record: on the kernel path, a readiness run
+that comes back without a valid payload can still be marked succeeded, with the model
+name recorded as "stub". It is logged honestly, but a run that succeeds without a model
+is a silent fallback in a system whose entire pitch is that every output is accountable.
 
-And underneath all three: sprawl. What began as a readiness gate for one role now has a
-view for every stage of delivery, an assurance and test-planning surface, a coding
-agent, a Model Context Protocol server and a demo mode. The codebase is platform-sized.
-The evidence is still prototype-sized. My own writing rules say never to call a
-prototype a platform merely because the codebase is large, and this project is exactly
-why that rule exists.
+The broader lesson: generating AI outputs is relatively easy. Building trustworthy
+workflows around those outputs is where most of the engineering effort lies.
 
 ## Lessons
 
-- Put the deterministic part after the model, not before it. Scores are cheap;
-  what they unlock is where the discipline belongs.
+- AI should assist delivery decisions rather than own them.
+- Deterministic policy belongs after probabilistic judgement, not before it. Scores are
+  cheap; what they unlock is where the discipline goes.
+- Existing delivery tooling is better extended than replaced. The versions of this idea
+  that tried to own the data model produced better demos and less adoptable tools.
 - Agents earn trust by asking questions, not by writing prose. The five reviewers are
   useful precisely because none of them is allowed to be the author.
-- The system of record should stay where it is. The versions of this idea that tried to
-  own the data model produced better demos and less adoptable tools.
-- An optional component is a component on trial, and the default value of its feature
-  flag is the interim verdict.
 - Auditability is cheapest as a snapshot. Recording exactly what the model saw answers
   most disputes before they become philosophical.
-- I cannot be trusted to describe my own projects from memory. This is the second page
-  on this site that had to be corrected against its repository, and I assume it will
-  not be the last.
+- An optional component is a component on trial, and the default value of its feature
+  flag is the interim verdict.
 
 ## Current State
 
 DeliveryIQ is a working prototype, not a product. The current repository is the third
-rebuild of the idea and holds 116 commits between January and March 2026. It runs
-locally as an eight-container composition: synchronisation, readiness scoring, the
-quality gate, prompt generation, the review agents and the write-back flows all work
-end to end. The kernel and the coding agent run but are not yet trusted with the
-product's spine.
+rebuild of the idea. It runs locally end to end: synchronisation, readiness scoring, the
+quality gate, prompt generation, the review agents and the write-back flows all work.
+The kernel and the coding agent run but are not yet trusted with the product's spine.
 
-What does not exist is the measurement. I have no evidence yet that gated work gets
-interrupted less, which is the claim the whole system is built on. The repository is
+What does not exist is the measurement. The platform demonstrates that AI-assisted
+delivery workflows can be built; whether teams using readiness gates see fewer
+interruptions, less rework and more predictable delivery than conventional refinement is
+the claim the whole system is built on, and it is still untested. The repository is
 private because it is shaped around a real team's workflow, but I am happy to walk
 through the architecture and the code.
 
@@ -232,10 +218,7 @@ through the architecture and the code.
 
 - What is the smallest honest evaluation of the core claim — do items that pass the gate
   get interrupted mid-sprint less than items that were started anyway?
+- Which review agents consistently provide unique value?
 - The kernel needs a decision: switch the spine onto it or delete it. Which?
-- What feedback signal should count as success for a routing decision, when "the model
-  answered" and "the answer helped" are very different events?
-- How much of the synchronisation layer is essential, and how much is the cost of one
-  team's particular Azure DevOps configuration?
-- The run record keeps scores, snapshots and audit events but not the full prompt
-  transcript. Is that a pragmatic trade or a hole in the accountability story?
+- What evidence best predicts whether work is genuinely ready?
+- Where should the boundary sit between AI assistance and delivery automation?
