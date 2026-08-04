@@ -14,7 +14,7 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 const currentObsessions = [
-  'agent workflows that are useful rather than theatrical',
+  'agent workflows that are useful rather than theoretical',
   'symbolic reasoning alongside language and diffusion models',
   'temporal knowledge graphs',
   'developer tools that remove repetitive coordination',
