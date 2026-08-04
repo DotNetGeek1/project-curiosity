@@ -1,0 +1,40 @@
+---
+title: Can three AI agents play Dungeons & Dragons?
+summary: A small experiment in whether autonomous agents can cooperate inside a world with rules they cannot rewrite.
+publishedAt: '2026-06-04'
+tags:
+  - AI Agents
+  - Multi-Agent Systems
+  - Games
+draft: false
+---
+
+## The Question
+
+Can three AI agents play Dungeons & Dragons together?
+
+One acts as the Dungeon Master. The others control player characters.
+
+The obvious version is just three chatbots talking to each other, which would probably last five minutes before they forgot the rules, ignored turn order and confidently invented a door that was never there.
+
+DungeonCore takes a stricter approach.
+
+The agents decide what they want to do, but a deterministic game engine owns the world state, validates actions, rolls dice and applies consequences.
+
+The bit I’m really testing is whether agents can cooperate when:
+
+- they have incomplete information
+- communication is limited
+- actions have hard constraints
+- mistakes persist
+- none of them controls reality
+
+D&D is useful because all of that is visible and usually entertaining.
+
+The current milestone is a single playable encounter with a Dungeon Master, multiple player agents and a complete turn loop.
+
+I have no idea whether they will behave like a party of adventurers. There is a fair chance they will behave like a committee with swords.
+
+Still investigating.
+
+---

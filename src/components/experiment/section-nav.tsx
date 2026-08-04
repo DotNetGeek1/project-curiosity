@@ -8,6 +8,59 @@ import { cn } from '@/lib/utils';
 /** Distance from the viewport top at which a section becomes the current one. */
 const ACTIVE_OFFSET = 140;
 
+/** Treat the reader as at the end when this many pixels remain below the fold. */
+const BOTTOM_THRESHOLD = 48;
+
+type SectionPosition = {
+  id: string;
+  top: number;
+};
+
+type ScrollMetrics = {
+  scrollY: number;
+  viewportHeight: number;
+  documentHeight: number;
+};
+
+/**
+ * Chooses which outline item is current from heading positions and scroll state.
+ *
+ * Exported for unit tests; the hook maps DOM nodes to positions before calling this.
+ */
+export function resolveActiveSectionId(
+  sections: readonly SectionPosition[],
+  metrics: ScrollMetrics,
+  activeOffset = ACTIVE_OFFSET,
+  bottomThreshold = BOTTOM_THRESHOLD
+): string | undefined {
+  const [first] = sections;
+
+  if (!first) {
+    return undefined;
+  }
+
+  const { scrollY, viewportHeight, documentHeight } = metrics;
+  const nearBottom = scrollY + viewportHeight >= documentHeight - bottomThreshold;
+
+  // A short final section may not scroll far enough for its heading to pass the
+  // active offset, even when the reader has reached the end of the page.
+  if (nearBottom) {
+    return sections[sections.length - 1]!.id;
+  }
+
+  let currentId = first.id;
+
+  for (const section of sections) {
+    if (section.top > activeOffset) {
+      break;
+    }
+
+    currentId = section.id;
+  }
+
+  return currentId;
+}
+
 type SectionNavProps = {
   sections: readonly ExperimentSection[];
   className?: string;
@@ -132,19 +185,18 @@ function useActiveSection(sections: readonly ExperimentSection[]): string | unde
     const update = () => {
       frame = 0;
 
-      // Above the first heading nothing has been scrolled past yet, so the first
-      // section stays current rather than the outline showing no position at all.
-      let current = first;
+      const positions = targets.map((target) => ({
+        id: target.id,
+        top: target.getBoundingClientRect().top,
+      }));
 
-      for (const target of targets) {
-        if (target.getBoundingClientRect().top > ACTIVE_OFFSET) {
-          break;
-        }
+      const nextId = resolveActiveSectionId(positions, {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        documentHeight: document.documentElement.scrollHeight,
+      });
 
-        current = target;
-      }
-
-      setActiveId(current.id);
+      setActiveId(nextId);
     };
 
     const schedule = () => {

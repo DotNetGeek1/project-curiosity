@@ -9,7 +9,7 @@ export const siteConfig = {
   // The dotnetgeek username was already taken on GitHub.
   githubUsername: 'DotNetGeek1',
   github: 'https://github.com/DotNetGeek1',
-  email: 'hello@dotnetgeek.co.uk',
+  email: 'alex@dotnetgeek.co.uk',
 } as const;
 
 export type NavItem = {

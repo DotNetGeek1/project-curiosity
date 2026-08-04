@@ -4,18 +4,16 @@ question: Can a small set of mechanics produce a mobile rogue-like game that is 
 summary: A mobile game experiment focused on pacing, replayability and the uncomfortable discovery that balancing a simple game is not simple at all.
 status: prototype
 technologies:
-  - Unity
-  - C#
-  - Procedural Generation
-  - Mobile
+  - Godot 4
+  - GDScript
+  - Android
 themes:
   - Game Design
   - Systems Balancing
   - Product Iteration
   - Mobile Experience
 startYear: 2026
-endYear: 2021
-featured: false
+featured: true
 order: 3
 repositoryPrivate: true
 lastUpdated: '2026-08'
@@ -23,38 +21,188 @@ lastUpdated: '2026-08'
 
 ## The Question
 
+This one started with Balatro and CloverPit.
+
+Both games do something I find fascinating: they take a tiny set of rules, add a deck of
+modifiers that bend those rules, and produce runs that feel different every time. Neither
+game has a story, a world or much of an interface. What they have is a loop you can hold
+in your head and a build system that keeps surprising you.
+
+I wondered if I took those rogue-like mechanics and gave them a vibe coding theme —
+absurd software contracts, burning ridiculous quantities of AI tokens, increasingly
+unstable compute infrastructure — would it make a decent mobile game?
+
+Turns out it's not bad.
+
+## The Problem
+
 Most of my side projects grow until they stop being fun. I wondered whether the opposite
 constraint would work: pick the smallest possible set of mechanics and see how far they
 stretch before players get bored.
 
-## Problem
+Games like Balatro succeed because every run is a sequence of small, legible decisions
+with consequences you can reason about. That sounds easy to copy. It isn't, because the
+real work is invisible: the economy has to be tuned so that clever builds feel powerful
+without any single strategy dominating, and the rules have to survive whatever
+combination the player throws at them.
 
-_To be written._
+The theme gave me a second problem I didn't anticipate. If the joke is "burn absurd
+quantities of tokens", the numbers have to escalate from millions to quadrillions over a
+single run — and an economy that spans nine orders of magnitude is genuinely hard to
+keep fair at both ends.
 
-## Hypothesis
+## The Hypothesis
 
-_To be written._
+My starting hypothesis was that a run-based game needs surprisingly little: contracts to
+complete, one currency for actions, a board where placement matters and a pile of
+rule-bending modifiers. Everything else — theme, escalation, meta-progression — could be
+data rather than code.
 
-## Approach
+That led to a design principle I wrote down early and kept coming back to:
 
-_To be written._
+> Strong combinations should be allowed to break the economy. Invalid combinations must
+> never break the simulation.
+
+If a player finds a perk combination that prints money, that's a balancing note, not a
+bug. If a perk combination crashes the game or produces `NaN` cash, that's a failure of
+engineering. Keeping those two categories separate shaped most of the architecture.
+
+## The Approach
+
+I built it in Godot 4 with GDScript, portrait-first for mobile, exporting to Android.
+
+You play a reckless vibe coder. A run is twelve rounds of the same loop: accept software
+contracts from a job board, buy hardware and cloud upgrades on the market, and arrange
+pipeline modules — prompts, cheap models, agent swarms, token caches, unit tests — into
+workflows on the Burn Board. Then you spend prompts. Each **burn** pushes a batch of
+tokens through your pipeline, making progress on contracts while generating heat, bugs
+and bills. Or you can **cool**, spending the prompt to vent heat instead of working.
+
+Contracts start at a plausible twelve million tokens for product descriptions and
+escalate to 1.4 trillion for an authentication system, because of course they do. The
+run doesn't really end at survival: from round four you can qualify for Ascension
+Contracts, endgame jobs that start at twenty billion tokens and climb into exatokens.
+
+The Balatro DNA is in the perks: twenty-four rule-benders with names like Ship It,
+Works On My Machine, Technical Debt, Rubber Duck and Vibe Check, drafted for free from
+angel investors between rounds. Position on the board matters too — a token cache placed
+before a model discounts it; the same cache in the last slot banks quality instead.
+Certain pairs form named synergies. My favourite is Vibe Coding: Vibe Check plus Bug
+Alchemy, which is roughly "ship on feel and transmute the consequences".
 
 ## Architecture
 
-_To be written._
+The simulation is authoritative and the UI is an observer. All game rules live in a
+simulation layer that the interface can only send actions to — accept this job, burn a
+batch, buy this upgrade. The UI never computes an outcome itself, which means the whole
+game can run headless, and that turned out to be the most important decision in the
+project.
 
-## Interesting Challenges
+Almost everything is data. Jobs, perks, upgrades, events and pipeline operations are
+JSON definitions that declare event subscriptions and effects using a small vocabulary —
+add, multiply, convert, spawn, defer a cost, borrow. An effect resolver applies them in
+fixed phases (base, additive, multiplicative, conversion, caps, triggers, finalise) so
+that stacking order is deterministic rather than an accident of load order.
 
-_To be written._
+The "never break the simulation" half of the design principle is enforced by a chain
+guard: effect chains are capped at a depth of 32, ten thousand effects per action and
+256 spawns, so a degenerate combination fizzles instead of hanging the game.
+
+Randomness is a custom deterministic generator with named substreams — the job board,
+the perk draft and the event roll each draw from their own stream derived from the run
+seed. A given seed always produces the same run, which makes bugs reproducible and
+automated balancing possible.
+
+There's a self-referential footnote to the architecture: the repository is organised so
+that multiple AI coding agents could work on it in parallel — per-folder code ownership,
+ADRs locking the shared contracts before content work started. The game about burning
+tokens was itself built by burning a frankly thematic quantity of tokens.
+
+## Trade-offs
+
+- **Interactive burns over an idle loop.** The original design had production ticking
+  along continuously, month by month. It simulated fine and played terribly, so the loop
+  was rebuilt around deliberate, one-at-a-time prompt spends. The old automatic loop
+  survives behind a feature flag because the balancing tools still drive runs with it.
+- **A data-driven effect engine over bespoke perk code.** Twenty-four perks as JSON
+  means new content without new code, but it also means the effect vocabulary is a hard
+  contract. Early on the semantics were half-stubbed and everything downstream stalled
+  until I stopped and specified them properly in an ADR.
+- **Determinism over convenience.** Seeded substreams cost discipline — every system has
+  to draw from the right stream, and UI code must never touch one. What it buys is
+  reproducible bugs and trustworthy batch simulation, which the balancing work would
+  have been impossible without.
+- **Android only, for now.** One export preset, arm64, no iOS. Shipping one platform's
+  quirks was enough while the design was still moving.
 
 ## What Went Wrong
 
-_To be written._
+The first version of the core loop was boring, and I didn't want to admit it. Production
+ran continuously while you watched numbers climb — an idle game wearing a rogue-like's
+clothes. The simulation was elegant and there was nothing to _do_. Rebuilding the loop
+around discrete prompt spends, where every burn is a choice between progress and heat,
+was the single largest rework in the project. The calendar went with it: runs were
+originally framed as twelve months, and the month-to-round rename still shows in save
+migrations and a bills screen stubbornly called `month_statement`.
+
+Balancing by intuition failed almost immediately. With numbers spanning millions to
+quadrillions, I couldn't feel whether a perk was overpowered by playing — I'd tune one
+tier and quietly wreck another. The fix was to stop playtesting by hand and build
+tooling: a batch runner that plays up to a thousand headless runs against simple
+policies, a combo scanner that simulates perk pairs and flags anything with a win rate
+above 95% or a token rate over a billion, and an in-game Burn Lab with tuning sliders
+and effect traces. The balancing tools ended up being some of the most interesting
+engineering in the repository, which is not what I expected from a silly mobile game.
+
+Determinism was harder to keep than to design. The job board originally rerolled its
+offers every time the UI refreshed, which meant tapping around the interface advanced
+the game's random streams — offers had to be stamped once per round instead. Multiplying
+the token rate during perk events corrupted the stacking maths until rate changes became
+registered modifiers applied on recalculation rather than direct mutations.
+
+Smaller indignities are preserved in a regression suite: an upgrade that could be bought
+twice and drain your cash, the headless test runner autosaving over real player saves,
+and a UI designed at 1080 pixels wide that was unreadable on an actual phone. The save
+format is on version eight, which is its own kind of confession.
 
 ## Lessons
 
-_To be written._
+- **Balancing is an engineering problem wearing a design costume.** I assumed tuning
+  would be taste and playtesting. At this numeric scale it was simulation, statistics
+  and tooling, and the game only became fair once I could run a thousand automated runs
+  and look at the distribution.
+- **Separate "breaks the economy" from "breaks the simulation".** Letting strong builds
+  be broken is what makes a rogue-like joyful; guard rails belong around correctness,
+  not power. The chain guard meant I could add absurd content without fearing crashes.
+- **An authoritative, headless simulation pays for itself.** Every good thing in this
+  project — batch balancing, combo scanning, reproducible bugs, regression tests for
+  real failures — came from the UI never owning a rule.
+- **Data-driven content needs its semantics locked first.** Definitions in JSON are only
+  fast to author once the effect vocabulary is specified and stable. Stubbed semantics
+  blocked everything built on top of them.
+- **The loop is the game.** A correct, elegant simulation with nothing to decide is a
+  spreadsheet. The project only started being fun when every prompt spend became a
+  choice with a visible consequence.
 
-## What's Next
+## Current State
 
-_To be written._
+Token Burn is a playable vertical slice, not a released game. A full twelve-round run
+works end to end on Android: contracts, the Burn Board, perks, upgrades, random events,
+angel drafts, ascension contracts, save and load, meta-progression and achievements. The
+headless test runner, batch simulator and combo scanner keep the balance honest, and an
+APK exists at version 0.4.0.
+
+What doesn't exist yet is evidence from other people. I know the loop holds _my_
+attention; whether it is genuinely difficult to put down is exactly the kind of claim
+that needs playtesters rather than my own enthusiasm. The repository is private, but I'm
+happy to walk through the simulation and the balancing tools.
+
+## Next Questions
+
+- Does the loop survive contact with players who don't already find the theme funny?
+- Is ascension the right ending, or does a run need a sharper final decision?
+- Two perks from the original design never made it into content. Do they earn their
+  place, or was cutting them the right call?
+- What does an iOS export cost beyond the Android preset?
+- How much of the balancing tooling generalises? A combo scanner that hunts degenerate
+  strategies feels useful well beyond this game.
