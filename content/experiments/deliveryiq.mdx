@@ -23,7 +23,7 @@ repositoryPrivate: true
 lastUpdated: '2026-03'
 ---
 
-## The Questions
+## The Question
 
 DeliveryIQ didn't begin with a product idea. It began with a series of questions that kept resurfacing as I experimented with AI-assisted development.
 
@@ -103,6 +103,14 @@ The technology will continue to evolve, but the need for engineers to understand
 That is what DeliveryIQ is really trying to explore.
 
 > **DeliveryIQ is an experiment in whether software delivery can be redesigned around preserving context.**
+
+## The Approach
+
+The system centres on a single workflow. A work item syncs in from Azure DevOps together with its supporting Confluence documentation, and the planning agent attempts to produce an implementation plan from that combined context. The readiness score reflects how successfully it can plan the work and, more importantly, how many questions it has to ask before it can produce a sensible answer.
+
+A deterministic gate sits after that assessment. Work below the threshold generates questions and recommendations, aimed at whoever can answer them. Work that passes can have implementation and test prompts generated, which a human then decides whether to apply back to Azure DevOps. The write-back is a button, not a background job, and it leaves an audit event behind.
+
+Around that loop sit five review agents with single, narrow responsibilities — a tech lead, a non-functional-requirements specialist, a UX and product voice, a delivery manager and a designated sceptic — each reading the same work item from its own angle. Their purpose is not to rewrite requirements but to expose risks and missing information before implementation begins. The AI questions more than it writes, and the analyst keeps ownership of the words.
 
 ## Architecture
 
