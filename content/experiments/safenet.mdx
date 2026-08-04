@@ -173,24 +173,163 @@ SafeNet exists so I can explore questions like that without pretending I already
 
 ## Approach
 
-_To be written._
+SafeNet spent years as a folder of notes before it became code. The danger with a project this size is that it stays a notes folder forever, so I forced it into the shape of a proof of concept.
+
+I wrote a project specification and broke the work into phases. The mini network and identity layer first, then the personal data vault and capability grants, then recipe capsules, policy and a transparency log, then manifest enforcement, and finally a demo that ties everything together.
+
+For each phase I keep an open-questions document alongside the design. Before I write any code I try to write down every question I can't answer, then force myself to answer it in writing. Some of those documents ended up longer than the code they describe. I've made peace with that.
+
+I also gave the project a grounding scenario to stop it drifting into pure philosophy. A shop asks for my delivery address so it can ship me something. It's allowed to keep the address for thirty days and share it onward with one named carrier. When I revoke the grant, both the shop and the carrier lose access. If SafeNet can't express that scenario cleanly, none of the grander ideas matter.
+
+I hadn't used Rust before this project, but SafeNet needed a small, predictable systems layer with explicit control over memory and concurrency. The project became the reason to learn it.
+
+The rendering engine could wait. The ideas I was least sure about all lived in the identity and data layers, so that's where the prototype started.
+
+---
 
 ## Architecture
 
-_To be written._
+The prototype is a Rust workspace of deliberately small services, with a couple of Node components around the edges.
+
+**safenetd** is the gateway daemon. It refuses to serve a site unless the site provides a signed manifest, verified with an Ed25519 public key before anything is served. It also hosts the endpoints for the transparency log and can replicate log entries from peers.
+
+**The personal data vault** encrypts records with XChaCha20-Poly1305 and stores them in PostgreSQL. Alongside the storage sits a grant store that models capability grants with delegation. A shop can delegate a subset of its access to a carrier, and revoking the shop's grant cascades down and invalidates the carrier's too.
+
+**The policy engine** evaluates rules written in YAML. A rule has a condition, a set of allow and redact patterns over vault URIs like `pdv://address/*#phone`, and a retention duration. The shipping demo's policy allows a carrier to see the address fields it needs and redacts the phone number unless the delivery is flagged as needing a call.
+
+**The symbolic recipe VM** is a tiny interpreter with five opcodes — substring, match, dictionary mapping, hash and range check — each running under a safety budget that caps literal sizes, dictionary entries and regex pattern length. Its job is to answer questions about my data without handing the data over.
+
+**The federated log** is a Merkle tree using RFC 6962-style hashing, with append, head and consistency-proof endpoints and simple peer replication.
+
+Around the Rust core sit a Node wallet that handles consent requests and grant lifecycle, a Node runtime service that validates site manifests, SDKs in Rust, TypeScript and Python, a small CLI, and a docker-compose file that brings the whole thing up with PostgreSQL.
+
+<Callout variant="note" title="Honesty about the state of things">
+
+The individual libraries are the strongest part of the prototype. The policy engine, grant store, recipe VM and Merkle log all have real implementations with unit tests.
+
+The glue between the services is much thinner. Everything speaks plain HTTP on localhost today. The overlay network described in the phase-one design, with WireGuard, Noise handshakes and QUIC, exists only in the documents.
+
+</Callout>
+
+---
 
 ## Interesting Challenges
 
-_To be written._
+**Answering questions without revealing data.** The over-eighteen check from the hypothesis sounds trivial until you try to build it. If a site can run arbitrary code against my date of birth, I've already lost. The recipe VM came out of this: the site sends a small, bounded computation to the data, and only the answer comes back. A range check proves I'm over eighteen. A hash proves two records match. A substring returns the part of the postcode a courier actually needs. The safety budgets exist because a VM like this is also a lovely exfiltration tool if you let a recipe build arbitrarily large outputs or pathological regexes.
+
+**Delegation without losing control.** Sharing my address with a shop is one problem. The shop sharing it with a carrier is a different one. Grants ended up forming a tree, where a delegated grant can only carry a subset of its parent's onward-share rights, and revoking a parent invalidates every child beneath it. Getting the cascade right was fiddly, and it convinced me that delegation has to be modelled from the start. Bolting it onto a flat permission list later would be miserable.
+
+**"Thirty days" from when?** Retention sounded like the easy part of the policy language until I asked what the clock starts counting from. When the data was collected? When it was last served? When the agreement took effect? Each answer produces genuinely different behaviour, so the policy engine supports all three retention clocks and a policy has to say which one it means. I spent a whole follow-up document arguing with myself about this.
+
+**How much proof does a transparency log need?** Full RFC 6962 inclusion and consistency proofs are well understood but a meaningful amount of work. I implemented a simplified consistency proof instead and wrote the compromise down in the code comments, so future me knows exactly what the log does and doesn't guarantee. For a prototype whose job is to test whether provenance logging belongs in the platform at all, that felt like the right trade.
+
+---
 
 ## What Went Wrong
 
-_To be written._
+SafeNet has been one of those projects where every answer seems to create two new questions.
 
-## Lessons
+When I started it, I genuinely thought I'd be spending most of my time building a new way of serving and rendering web applications.
 
-_To be written._
+That idea is still there.
+
+The funny thing is I haven't really got to it yet.
+
+Every time I peeled back another layer, I found something else that needed understanding first. Identity became permissions. Permissions became grants. Grants became policy engines. Then came cryptography, provenance, secure storage, distributed networking and trusted communication.
+
+Before I knew it, I'd built a collection of libraries and services exploring the foundations of the platform, while the renderer that originally inspired the whole project was still sat on the whiteboard waiting for its turn.
+
+I'm actually fine with that.
+
+SafeNet was always meant to be an experiment, and the journey has turned out to be far more interesting than the route I originally imagined.
+
+Quite a few of the ideas explored here have already influenced other projects. The work around provenance, permissions and semantic relationships ended up feeding directly into Chronos, while some of the thinking around trust and AI context found its way into DeliveryIQ.
+
+The renderer is still on the list.
+
+It's just patiently waiting while I finish exploring all the interesting rabbit holes I found on the way there.
+
+---
+
+One example is the network itself.
+
+The original design describes a secure overlay network built around encrypted communication and custom protocols.
+
+Today's implementation is much simpler.
+
+The ideas are still there, but they're deliberately being explored in isolation before I commit to building the complete stack. I'd much rather prove individual concepts than spend months building infrastructure only to discover the underlying assumptions were wrong.
+
+---
+
+Another lesson came from the developer tooling.
+
+At one point I wrote three SDKs for services that barely existed.
+
+It felt productive.
+
+The APIs were documented, the client libraries compiled and everything looked like it was moving forwards.
+
+Except the services themselves hadn't caught up.
+
+Looking back, I should have built one complete end-to-end path before expanding the ecosystem around it.
+
+It's a mistake I'll probably make again because I genuinely enjoy designing APIs, but it's a good reminder that a working system always teaches more than a beautifully designed interface.
+
+---
+
+SafeNet also taught me that trust rarely fails in the places you expect.
+
+The cryptography wasn't the difficult part.
+
+The policy engine wasn't the difficult part.
+
+The difficult parts were things like consent flows, key management and all the unglamorous plumbing that quietly determines whether a system is actually trustworthy.
+
+They're the sort of components nobody notices when they work.
+
+They're also the parts everything else depends on.
+
+---
+
+The final lesson is probably the most important.
+
+SafeNet isn't one project.
+
+It's a collection of experiments exploring different aspects of the same question.
+
+Some of those experiments have become libraries.
+
+Some are prototypes.
+
+Some exist only as notes and architecture sketches.
+
+Others have influenced completely different projects, particularly Chronos and DeliveryIQ.
+
+The renderer that originally inspired the project is still waiting for its turn.
+
+I haven't abandoned that idea. I've simply found a lot of interesting questions on the way there.
 
 ## What's Next
 
-_To be written._
+SafeNet is still very much an active project.
+
+The difference is that I now understand the problem space far better than I did when I started.
+
+The immediate goal is to connect the pieces that already exist into a complete end-to-end scenario. That means exposing the grant and policy engines through the vault, completing the consent flow and turning today's scripted demonstrations into a working system.
+
+After that I want to return to the original question that started the project.
+
+Can a structured, client-rendered web experience provide the flexibility people expect without requiring websites to execute arbitrary code?
+
+That feels like the right point to reconnect all of the ideas explored so far.
+
+Beyond that, there are still plenty of open questions.
+
+- Does the network itself need to change, or can most of these ideas sit on top of today's Internet?
+- How much of identity, trust and provenance belongs in the platform, and how much belongs in applications?
+- Can distributed ledgers genuinely add value, or are simpler transparency mechanisms enough?
+- What is the smallest useful renderer that proves the idea without becoming another browser?
+
+SafeNet has already answered some of the questions I started with.
+
+The interesting thing is how many new ones it's created along the way.
