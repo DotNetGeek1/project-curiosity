@@ -16,7 +16,7 @@ themes:
   - Agentic Systems
   - Research Prototyping
 startYear: 2025
-featured: false
+featured: true
 order: 5
 repositoryPrivate: true
 lastUpdated: '2025-07'
@@ -24,58 +24,105 @@ lastUpdated: '2025-07'
 
 ## The Question
 
-Morris did not begin as an AI project. It began as a physics simulation: a field of coupled
-oscillators, each with a phase, nudging its neighbours, damped so the whole thing settles
-instead of exploding. The second commit in the repository is called "is now working with the
-right math", which tells you what I was worried about at the time.
+Morris didn't begin as an AI project.
 
-What kept me looking at it was that the field settles into stable regions. Patches of the
-simulation lock into agreement with each other and stay there. And a stable, repeatable,
-addressable region of state is — if you squint, and I did — a register.
+It began while I was writing a science-fiction novel.
 
-So the question stopped being about waves. I wondered whether a simulation could be a
-computer, and whether that computer could be made to reason in a way I could watch.
+Trying to explain the fictional physics behind that universe led me to build a small simulation called RippleNet. It wasn't intended to become anything more than a way of exploring an idea.
 
-<Callout variant="warning" title="How to read this page">
-  Morris is an experiment. It is not a product, not a step towards machine minds, and not a system I
-  would put in front of anything that mattered. This page was rewritten from the repository rather
-  than from memory, and rewriting it corrected several things I had believed about my own project.
-  Where the code and my recollection disagreed, the code won.
-</Callout>
+Then I noticed something.
+
+The simulation naturally settled into stable patterns.
+
+Those patterns persisted.
+
+They interacted.
+
+They changed over time.
+
+That made me wonder whether those patterns could represent information.
+
+Once that question appeared, the project quietly escaped the original plan.
+
+Could a wave simulation become a computer?
+
+And if it could become a computer...
+
+Could it eventually become something capable of reasoning?
+
+---
 
 ## The Problem
 
-The problem I actually had is the one that sits under most of AI, and I arrived at it
-sideways rather than by reading about it.
+Around the same time, large language models were becoming genuinely useful.
 
-Continuous systems — wave fields, neural networks, anything made of floating point — are
-good at settling, generalising and degrading gracefully. They are bad at telling you what
-they mean. There is no point in the tensor where you can put your finger and say "that is
-the idea of a door".
+I found them fascinating, but I also found them frustrating.
 
-Discrete symbolic systems are the exact inverse. A rule that fires is a rule you can read,
-and when the conclusion is wrong you can name the rule responsible. But somebody has to
-write every rule, the rules do not stretch past what was anticipated, and the encoding cost
-of a messy domain grows faster than the value you get back.
+They could produce remarkable results, yet most of the reasoning happened inside a black box.
 
-The usual move is to pick one and apologise for the other. What I wanted was a continuous
-substrate that was nevertheless completely inspectable — because it is my simulation, and
-every number in it is available — and then a way to read discrete symbols out of it and
-write them back in.
+I wanted something I could inspect.
+
+Something where I could stop the program, examine every step and understand why it had reached a particular conclusion.
+
+RippleNet already gave me a system I understood completely.
+
+Every interaction was visible.
+
+Every value had a reason for existing.
+
+That led to another question.
+
+Could a symbolic reasoning system sit on top of that substrate, with a language model acting as another tool rather than the thing doing all the thinking?
+
+---
 
 ## The Hypothesis
 
-My hypothesis was that the boundary between continuous and discrete could be a round trip
-rather than a wall.
+The idea sounded wonderfully unreasonable.
 
-Concretely: if I threshold the state of the field, I get discrete symbols. If those symbols
-drive rules, I get inference I can read. And if the conclusions of that inference can be
-written back into the field as a perturbation — a phase shift applied to a region — then
-reasoning and simulation are not two systems bolted together. They are one loop, and I can
-watch every step of it.
+If stable regions inside the simulation could reliably represent information, perhaps they could become registers.
 
-That was the bet. It is worth saying immediately that the bet has a flaw I did not see
-clearly until much later, and the flaw is in the word "threshold". More on that below.
+Registers become memory.
+
+Memory becomes computation.
+
+Computation makes symbolic reasoning possible.
+
+If a symbolic system could expose its reasoning to a language model, perhaps the language model could become better at planning and problem solving while still allowing every decision to be inspected.
+
+I had absolutely no idea whether any of that would work.
+
+That seemed like a perfectly good reason to build it.
+
+---
+
+## The Journey
+
+The project grew one question at a time.
+
+RippleNet came first.
+
+RippleNet produced stable patterns.
+
+Stable patterns suggested storage.
+
+Storage suggested computation.
+
+So I built a CPU.
+
+Once I had a CPU, I needed a way to program it.
+
+That became RippleLang.
+
+Programming the system naturally led to symbolic reasoning.
+
+Eventually I connected a locally hosted language model so it could generate RippleLang programs, interact with the symbolic layer and make use of tools around it.
+
+At some point I realised I had accidentally built a symbolic AI platform around a speculative physics simulation that originally existed to support a science-fiction novel.
+
+That wasn't where I expected the project to end up.
+
+It rarely is.
 
 <Callout variant="note" title="What is actually in the repository">
   **Built and running:** a PyTorch simulation of a coupled phase field; a simulated CPU whose
@@ -95,184 +142,149 @@ symbolic layer. That was aspiration that had quietly turned into recollection.
 
 </Callout>
 
-## The Approach
+---
 
-The order things were built in is the honest explanation of the project, because each layer
-exists to make the previous one useful.
+## The Unexpected Experiment
 
-The field came first. Phase and amplitude across a grid of oscillators, coupled to their
-neighbours, integrated in small time steps with a damping term. Written in PyTorch, mostly
-because I wanted the derivatives and the GPU, and partly because it made the whole state a
-tensor I could print.
+Morris also became an experiment in something I hadn't planned.
 
-The CPU came next, and this is the part I still find pleasing. Registers are not variables;
-they are zones of the phase field. Reading a register means taking a statistic over a region
-of the simulation. Writing to one means perturbing that region and letting the physics carry
-it. There is an instruction memory, an arithmetic unit and an instruction pointer, and the
-whole thing steps forward alongside the physics rather than on top of it.
+I started the project during the GPT-4 era, when AI coding assistants were still very young. Back then they occasionally struggled with Python syntax, never mind helping build a symbolic reasoning platform inspired by AI research from the 1970s.
 
-Then the symbolic layer, which is the round trip from the hypothesis. It watches the field
-and emits symbols when conditions hold — the phase in this region is high, the variance
-across this task exceeds this value, overall coherence is above this line. Those symbols feed
-a rule set, rules fire when all their antecedents are present, and conclusions can be seeded
-back into the field as a phase shift.
+Part of me simply wanted to see how far I could push the technology.
 
-RippleLang came after that, because driving the system by hand had become tedious. It is a
-small imperative macro language: seed a symbol, wait, branch if a value exceeds a threshold,
-jump to a label, call an action or a plugin, return. Programs are parsed to instructions and
-run on a virtual machine that keeps a trace of everything it executed.
+Could AI help me build something well beyond my existing knowledge?
 
-And then the language model, which does one job: turn a sentence into a RippleLang macro. It
-runs locally rather than against a hosted service. Morris — the name, the voice, the persona
-— is the layer in front of that, and it arrived last.
+The answer surprised me.
 
-![Hand-drawn architecture sketch of Morris: a phase field at the base, a simulated CPU whose registers are zones of that field, a symbolic layer extracting and seeding symbols, RippleLang and its virtual machine above, and a local language model and conversational front end at the top](/images/experiments/morris/architecture.webp)
+Instead of spending years learning enough mathematics, symbolic AI and computational theory before attempting the project, I found myself learning those subjects while building it.
 
-_Five layers, drawn bottom-up in the order they were built. Each one exists because the layer
-below it was hard to use directly. Sketched by hand because a clean diagram would imply a
-cleaner system than this is._
+AI became a guide rather than a replacement.
 
-## Architecture
+I could ask questions, explore unfamiliar ideas, build experiments, observe the behaviour and then work backwards to understand the theory that explained what I'd just seen.
 
-Five layers, and the interesting property is that the bottom two are the same substrate.
+That completely changed the way I learn.
 
-1. **The field.** A simulated grid of coupled oscillators carrying phase and amplitude,
-   integrated in small steps with coupling and damping constants I tuned by watching it. This
-   is the only part of the system with no abstraction underneath it.
-2. **The CPU.** Registers mapped to regions of the field, an instruction memory, an
-   arithmetic unit and a program counter. A register value is a statistic over a patch of
-   simulation, so computation and physics are the same substrate rather than layered.
-3. **The symbolic layer.** Symbol extraction by thresholding field statistics, a forward-
-   chaining rule engine over the resulting symbol set, and a seeding path that writes
-   conclusions back into the field as perturbations. It also keeps transition counts between
-   symbols over time, which is where the surprise detection and counterfactual work sits.
-4. **RippleLang and its machine.** Parser, instruction set and interpreter, with an execution
-   trace recorded per run. Exposed over an HTTP service with validate, execute and step-
-   through-debug endpoints.
-5. **Model and persona.** A locally hosted language model behind a gateway, used to translate
-   natural language into RippleLang and to rewrite macros. Morris sits in front: tone modes,
-   safety filters, a memory store and a WebSocket interface, plus a Windows client with a
-   wake word and speech synthesis.
+Without AI tooling I would probably never have started Morris.
 
-Around all of that is a Docker composition of roughly seventeen services with PostgreSQL,
-Redis and a message queue. That is the part of the architecture I would not repeat.
+The barrier to entry would simply have been too high.
 
-![Hand-drawn sketch of the field-to-symbol round trip: a phase field on the left with a region above a threshold line, an arrow to a discrete symbol, that symbol firing a rule to produce a conclusion, and an arrow carrying the conclusion back into the field as a phase shift](/images/experiments/morris/field-to-symbol.webp)
+Instead of spending years preparing to ask the question, I could begin exploring immediately and learn the theory as the project evolved.
 
-_The loop the whole project was built around: threshold the field into symbols, fire rules,
-seed the conclusion back as a perturbation. The dashed line marks the threshold, which is also
-where the trouble is._
+One of the biggest surprises has been how approachable the mathematics became.
 
-## Trade-offs
+Rather than staring at equations on a page, I could change a parameter, rerun the simulation and watch the behaviour change.
 
-- **A physics substrate versus just writing the program.** Nothing Morris computes needs a
-  wave simulation underneath it. I could have written the rule engine on its own in an
-  afternoon and it would have been faster, clearer and less interesting. I chose the
-  substrate because the question was whether it could be done, not whether it should be, and
-  I would make the same choice again for the same reason — while being honest that it is not
-  an engineering justification.
-- **Continuous state versus discrete symbols.** The round trip works. What it costs is that
-  the translation between the two is lossy in both directions and I control the loss by hand.
-  That is the central trade and I do not think I got it right.
-- **An imperative language versus the declarative one I wanted.** RippleLang has labels and
-  jumps because that is what the machine underneath it wanted. I had intended something
-  closer to facts, rules and goals, and what I built is closer to assembly with a friendly
-  face. The rule system ended up living in the host language instead, which means the thing
-  I can most easily read is not the thing I most wanted to read.
-- **Seventeen services for one user.** Splitting the system up made each piece testable and
-  made the whole thing tedious to run. There is a superseded monolithic orchestrator archived
-  in the repository that was, for actually doing research, better.
-- **A local model versus a hosted one.** Running the model locally kept everything on one
-  machine and kept costs at zero. It also meant model quality was whatever fitted in memory,
-  and a meaningful share of the bad translations were the small model's fault rather than
-  the architecture's — which makes the architecture harder to evaluate, not easier.
+For the first time I wasn't just reading the maths.
+
+I could almost touch it.
+
+Cause and effect became something I could actually see.
+
+That suits the way I learn far better than studying for years before building anything.
+
+---
+
+## Trusting the Machine
+
+Working this way also forced me to rethink software engineering itself.
+
+GPT-4 was remarkably capable for its time.
+
+It was also capable of confidently generating code that looked entirely believable while quietly doing something completely different from what I thought I'd asked for.
+
+Occasionally it even invented implementations that produced the output I expected without actually solving the problem.
+
+Finding those became part of the engineering process.
+
+Read the code.
+
+Question the assumptions.
+
+Write tests.
+
+Verify the behaviour.
+
+Even today there are small parts of Morris that I don't completely understand.
+
+A few years ago I would have found that deeply uncomfortable.
+
+Now I think it's simply another level of abstraction.
+
+When high-level languages first appeared, many developers checked the assembly generated by the compiler line by line.
+
+Today I never think about the machine code produced by C#.
+
+We gradually learned to trust the abstraction because experience showed us when it deserved that trust.
+
+AI feels like the next step along the same path.
+
+The difference is that today's abstractions are still young.
+
+Trust has to be earned.
+
+What has been particularly interesting is watching newer models revisit parts of the project.
+
+GPT-4 occasionally filled gaps with convincing nonsense.
+
+As the frontier models have improved, many of the underlying ideas have continued to hold up remarkably well.
+
+That has been one of the most encouraging outcomes of the entire experiment.
+
+---
 
 ## What Went Wrong
 
-The failure I want to describe is not dramatic, and it is the one that matters.
+The biggest unanswered question is still the one that matters most.
 
-**The thresholds were mine.** Symbols come out of the field when a statistic crosses a
-line — phase above this, variance beyond that, coherence over this other number. I chose
-every one of those lines by hand, by watching the simulation and picking values that produced
-a sensible-looking number of symbols. Which means the vocabulary the "symbolic" layer reasons
-in is not something the system discovered in the physics. It is something I installed and
-then observed with delight. Every interesting behaviour I saw has to survive that objection
-first, and I cannot currently show that any of them do. This is the flaw in the hypothesis,
-it was there from the first version, and it took me far too long to state plainly.
+Does the RippleNet substrate actually contribute anything useful?
 
-**Things degraded silently into mocks.** Several integration points fall back to stub
-implementations when an import fails, log a debug line, and carry on. It is a reasonable
-pattern for a service that must stay up. It is a terrible one for a research system, because
-a run that appears to work may not have been running the components you were testing. For a
-project whose entire premise is inspectable state, having a code path that quietly replaces
-the thing being inspected is close to self-parody.
+The symbolic reasoning works. RippleLang works. The AI integration works. The simulation works.
 
-**The system could rewrite its own program, and I thought that was a feature.** The
-instruction set includes an operation that writes a new instruction into the instruction
-memory, so a running program can modify itself mid-execution. Separately, there was a module
-that pruned rules whose success rate fell below a cutoff, deleting parts of the rule set
-between runs. Both were deliberate. Both did what they were supposed to. And together they
-meant that when behaviour changed I could not always tell whether I had changed it, the
-program had, or the rule pruner had removed something three runs ago that everything since
-had depended on. The rule-pruning module is orphaned in the current tree; the self-modifying
-instruction survives, in the simulation, where it can only rewrite a tensor.
+What I still can't honestly answer is whether combining them produces something fundamentally better than a conventional symbolic reasoning system. That remains the question at the heart of Morris.
 
-**Containment was thinner than I told myself.** There is an action plugin that launches
-applications on the host, including a shell, through the operating system. There is a
-plugin that reads and writes files, and there are plugins that make outbound network calls.
-Plugins are discovered by scanning a directory at start-up and importing whatever Python
-files are there, so the capability list is not a fixed thing declared in one place — it is
-whatever is on disk. The desktop client keeps an allow-list of permitted commands, which is
-real and does work; the sandbox flag next to it is off by default. None of that is exotic and
-none of it was hidden from me. It was simply less contained than the version of the project
-I carried around in my head, and the state label at the top of this page is a joke that was
-doing more work than it had earned.
+The project also became much larger than I intended. Every interesting answer seemed to create two new questions.
 
-The honest summary of the last two is that I had been describing intentions as properties.
-Reading the repository to write this page is what corrected it.
+Before long I had accumulated a CPU, a programming language, reasoning engines, plugins, local models and more services than any one-person research project had any right to possess.
+
+I don't regret that.
+
+Several of those side quests have already influenced completely different projects.
+
+---
 
 ## Lessons
 
-- If you choose the vocabulary a system reasons in, you cannot then be impressed by what it
-  reasons about. This is the whole lesson of the project and everything else is detail.
-- A safety property that is not enforced in one readable place is not a property. It is a
-  habit, and habits do not survive the next plugin you drop in a folder.
-- Silent fallbacks and inspectable state are incompatible goals. Research code should fail
-  loudly and let me deal with it.
-- Writing something down for other people to read is a stronger audit than any review I
-  perform on my own work. Three claims on this page did not survive contact with the
-  repository, and I believed all three sincerely.
-- Building the beautiful substrate first and the useful thing on top means the useful thing
-  is shaped by the substrate. Registers made of wave regions gave me an assembly language,
-  not the declarative language I actually wanted.
-- Ten weeks is enough time to build something genuinely novel and nowhere near enough time
-  to find out whether it is any good.
+- AI dramatically lowers the barrier to exploring unfamiliar fields.
+- Learning while building suits me far better than learning before building.
+- Verification matters far more than generation.
+- Symbolic reasoning still has a valuable role alongside language models.
+- Building infrastructure is easier than designing experiments that genuinely test a hypothesis.
+- Interesting questions have a habit of producing completely different projects.
+
+---
 
 ## Current State
 
-Morris is stopped. The repository holds 177 commits between late May and mid-July 2025, and
-nothing since. It runs, or it did the last time I brought the composition up: the field
-simulates, the CPU executes, the rule engine fires, RippleLang parses and runs, and the local
-model turns sentences into macros with a hit rate somewhere around encouraging.
+Morris is currently paused for a very practical reason.
 
-There is a reasonable test suite — around a hundred test files covering the language runtime,
-the reasoning components and the services. There is no evaluation of any kind against a
-baseline. I never established that the physics substrate does anything a plain rule engine
-would not, which is the question the whole project rests on, and it remains unanswered.
+Resources.
 
-The repository is private. Partly that is tidiness, and partly it is that the write-up above
-is a more honest account of the system than the repository's own documentation, which
-contains benchmark figures and completion claims I cannot reproduce.
+To run the version I actually want, I need a local language model, the RippleNet simulation, the symbolic reasoning layer, diffusion models, memory, supporting services and enough GPU capacity to run them together without everything grinding to a halt.
+
+Realistically, that means hardware costing somewhere around £15,000. I am not spending that on a side project and I am definitely not turning Morris loose inside a cloud account.
+
+Given enough access, compute and poor judgement, he would probably set fire to a data centre.
+
+So for now Morris remains contained on hardware I control, running in smaller pieces when I want to test a specific idea.
+
+The project is still active in the sense that the questions have not gone away. The limiting factor is no longer whether I know what to build next. It is whether I can run the thing safely and affordably once I have built it.
+
+---
 
 ## Next Questions
 
-- Can symbols be derived from the field rather than thresholded out of it by hand? Unless the
-  answer is yes, the interesting version of this project has not been attempted.
-- What is the smallest baseline that would settle whether the substrate earns its place — the
-  same rule set, the same tasks, no physics underneath?
-- Would the declarative language I originally wanted survive contact with a machine whose
-  registers are regions of a wave field, or is the imperative shape forced?
-- How much of what I attributed to the architecture was the small local model, and how would
-  I separate the two?
-- What would a capability list look like if it could not be extended by adding a file to a
-  folder? That is the fix, and I have not written it.
+- Can stable symbols emerge naturally rather than being defined by me?
+- Does the substrate genuinely improve reasoning?
+- Could Morris support other reasoning systems besides language models?
+- What would I deliberately leave out if I started again?
+- How much can AI accelerate research without sacrificing understanding?

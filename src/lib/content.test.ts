@@ -165,22 +165,29 @@ describe('getNotes', () => {
 });
 
 /**
- * CNT-001 requires a featured experiment to be a complete story, and defines the
- * narrative contract every complete story must satisfy.
+ * CNT-001 requires a featured experiment to be a complete story. Every complete
+ * story shares the same narrative spine, but the middle differs by shape:
+ * Chronos and DeliveryIQ follow the engineering shape (Approach, Architecture,
+ * Trade-offs), while Morris was rewritten in 2026-08 as a journey narrative
+ * with its own middle sections.
  */
-const completeStories = ['deliveryiq', 'chronos', 'morris'];
-
-const requiredSections = [
+const sharedSections = [
+  /^## The Question$/m,
   /^## The Problem$/m,
   /^## The Hypothesis$/m,
-  /^## The Approach$/m,
-  /^## Architecture$/m,
-  /^## Trade-offs$/m,
   /^## What Went Wrong$/m,
   /^## Lessons$/m,
   /^## Current State$/m,
   /^## Next Questions$/m,
 ];
+
+const engineeringShape = [/^## The Approach$/m, /^## Architecture$/m, /^## Trade-offs$/m];
+
+const narrativeContracts: Record<string, RegExp[]> = {
+  deliveryiq: engineeringShape,
+  chronos: engineeringShape,
+  morris: [/^## The Journey$/m, /^## The Unexpected Experiment$/m, /^## Trusting the Machine$/m],
+};
 
 function bodyOf(slug: string): string {
   const experiment = getExperimentBySlug(slug);
@@ -197,12 +204,11 @@ describe('experiment narrative completeness', () => {
     }
   });
 
-  for (const slug of completeStories) {
+  for (const [slug, shapeSections] of Object.entries(narrativeContracts)) {
     it(`gives ${slug} every section the narrative contract requires`, () => {
       const body = bodyOf(slug);
 
-      expect(body).toMatch(/^## The Question$/m);
-      for (const section of requiredSections) {
+      for (const section of [...sharedSections, ...shapeSections]) {
         expect(body, `${slug} is missing ${section.source}`).toMatch(section);
       }
     });

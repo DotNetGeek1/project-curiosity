@@ -52,7 +52,15 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
 
   return (
     <Container variant="content">
-      <div className="grid gap-12 py-10 lg:grid-cols-[12rem_minmax(0,1fr)_12rem] lg:gap-8 xl:grid-cols-[13rem_minmax(0,1fr)_14rem] xl:gap-12">
+      {/*
+       * `data-spine="hidden"` asks MainContent to drop the notebook spine and
+       * relax the shell width: with two sticky rails flanking the prose, the
+       * reading column needs the space more than the bound edge does.
+       */}
+      <div
+        data-spine="hidden"
+        className="grid gap-12 py-10 lg:grid-cols-[12rem_minmax(0,1fr)_12rem] lg:gap-8 xl:grid-cols-[13rem_minmax(0,1fr)_14rem] xl:gap-12"
+      >
         {/*
          * The experiment header of UX-003 §1 — name, state, period, outline and
          * repository visibility — set as a rail so the reading column can open on
