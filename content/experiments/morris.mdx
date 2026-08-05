@@ -124,6 +124,24 @@ That wasn't where I expected the project to end up.
 
 It rarely is.
 
+<Callout variant="note" title="What is actually in the repository">
+  **Built and running:** a PyTorch simulation of a coupled phase field; a simulated CPU whose
+  registers are regions of that field, with its own instruction set; a knowledge base that
+  extracts symbols from field state, forward-chains rules over them and seeds symbols back into
+  the field; RippleLang, a small imperative macro language, with a parser, a virtual machine and
+  an execution trace; translation from natural language into RippleLang by a locally hosted
+  language model; and Morris itself — a conversational front end with persistent memory, tone
+  control and a Windows voice client.
+
+**Built and honestly not load-bearing:** roughly seventeen separate services behind Docker,
+PostgreSQL, Redis and a message queue, for a system with exactly one user.
+
+**Never built, despite what I used to say about it:** any vision or perception pipeline. There
+is none. An earlier version of this page claimed 3D vision fed structured facts into the
+symbolic layer. That was aspiration that had quietly turned into recollection.
+
+</Callout>
+
 ---
 
 ## The Unexpected Experiment
