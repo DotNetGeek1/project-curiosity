@@ -142,6 +142,11 @@ symbolic layer. That was aspiration that had quietly turned into recollection.
 
 </Callout>
 
+![Hand-sketched architecture sheet of Morris drawn as five stacked layers: a PyTorch phase field of coupled oscillators at the bottom, the RippleNet CPU whose registers are zones of that field above it, then the symbolic knowledge base that thresholds field state into symbols and seeds them back, then the RippleLang virtual machine with its parser and execution trace, and Morris itself at the top as a local language model with tone, memory and a websocket; side notes record roughly seventeen services in Docker and no vision layer, never built](/images/experiments/morris/architecture.webp)
+
+_Each layer exists to make the one below it usable. Drawn as a stack because that is honestly
+how it was built — one question at a time, upwards._
+
 ---
 
 ## The Unexpected Experiment
@@ -241,6 +246,11 @@ Does the RippleNet substrate actually contribute anything useful?
 The symbolic reasoning works. RippleLang works. The AI integration works. The simulation works.
 
 What I still can't honestly answer is whether combining them produces something fundamentally better than a conventional symbolic reasoning system. That remains the question at the heart of Morris.
+
+![Hand-drawn notebook sketch titled "I chose where the symbols begin": a rippling phase field, a coherent region inside it, a hand-chosen threshold marked in red, the discrete symbol coherence_high that region becomes, a rule firing and producing a conclusion, and a dashed arrow carrying that conclusion back into the field as a phase shift; a red annotation reads "the vocabulary is mine, not the physics'"](/images/experiments/morris/field-to-symbol.webp)
+
+_This is where the honest doubt lives. The loop closes, but I picked the threshold and I named
+the symbol, so the meaning arrives from me rather than emerging from the field._
 
 The project also became much larger than I intended. Every interesting answer seemed to create two new questions.
 

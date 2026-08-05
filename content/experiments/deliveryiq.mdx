@@ -110,6 +110,11 @@ The system centres on a single workflow. A work item syncs in from Azure DevOps 
 
 A deterministic gate sits after that assessment. Work below the threshold generates questions and recommendations, aimed at whoever can answer them. Work that passes can have implementation and test prompts generated, which a human then decides whether to apply back to Azure DevOps. The write-back is a button, not a background job, and it leaves an audit event behind.
 
+![Hand-sketched engineering drawing of the readiness gate: a work item and its wiki brief synced from Azure DevOps feed a planning agent that attempts an implementation plan and records every question it has to ask, a deterministic gate then checks whether a plan was produced and whether the question count is under the threshold, passing work through to drafted developer and test prompts that only reach Azure DevOps when a human clicks apply, and failing work back to the analyst as questions that loop round to improve the item](/images/experiments/deliveryiq/readiness-gate.webp)
+
+_The whole workflow in one drawing. The model proposes, the gate disposes, and the only thing
+that writes to Azure DevOps is a human pressing a button._
+
 Around that loop sit five review agents with single, narrow responsibilities — a tech lead, a non-functional-requirements specialist, a UX and product voice, a delivery manager and a designated sceptic — each reading the same work item from its own angle. Their purpose is not to rewrite requirements but to expose risks and missing information before implementation begins. The AI questions more than it writes, and the analyst keeps ownership of the words.
 
 ## Architecture
