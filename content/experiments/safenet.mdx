@@ -219,6 +219,11 @@ The glue between the services is much thinner. Everything speaks plain HTTP on l
 
 **Delegation without losing control.** Sharing my address with a shop is one problem. The shop sharing it with a carrier is a different one. Grants ended up forming a tree, where a delegated grant can only carry a subset of its parent's onward-share rights, and revoking a parent invalidates every child beneath it. Getting the cascade right was fiddly, and it convinced me that delegation has to be modelled from the start. Bolting it onto a flat permission list later would be miserable.
 
+![Hand-drawn notebook sketch of the grant delegation tree: my address in the vault at the top, a grant to a shop beneath it carrying a thirty-day retention and permission to share onward with one named carrier, a delegated grant to that carrier below which is a subset only and cannot be re-shared, a policy card allowing the address lines and redacting the phone number, and a red strike through the top grant with a dashed arrow showing the revocation cascading down and killing the child grant too](/images/experiments/safenet/grant-delegation.webp)
+
+_The shipping scenario is deliberately small, and it still took a tree to express. Revoking the
+shop's grant has to take the carrier's with it, or the guarantee means nothing._
+
 **"Thirty days" from when?** Retention sounded like the easy part of the policy language until I asked what the clock starts counting from. When the data was collected? When it was last served? When the agreement took effect? Each answer produces genuinely different behaviour, so the policy engine supports all three retention clocks and a policy has to say which one it means. I spent a whole follow-up document arguing with myself about this.
 
 **How much proof does a transparency log need?** Full RFC 6962 inclusion and consistency proofs are well understood but a meaningful amount of work. I implemented a simplified consistency proof instead and wrote the compromise down in the code comments, so future me knows exactly what the log does and doesn't guarantee. For a prototype whose job is to test whether provenance logging belongs in the platform at all, that felt like the right trade.
